@@ -154,7 +154,8 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="assets/php/mainSearch.php">
+                    <form action="assets/php/mainSearch.php" method="post">
+                        <input type="hidden" name="type" value="1">
                         <div class="form-group row">
                             <label for="trStart" class="col-sm-3">Start Date:</label>
                             <div class="col-sm-9">
@@ -189,6 +190,7 @@
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <input type="submit" class="btn btn-primary" value="Search">
                         </div>
+
                     </form>
                 </div>
 
