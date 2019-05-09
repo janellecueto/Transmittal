@@ -1,0 +1,25 @@
+#mainBody{
+    position: absolute;
+    width: 80%;
+    max-width: 710px;
+    top: 40%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+}
+h2{
+    margin-bottom: 50px;
+}
+.trBtn{
+    margin-bottom: 10px;
+    color: white;
+    background-color: dodgerblue;
+}
+.col-md-3{
+    margin-bottom: 10px;
+}
+.settings{
+    margin-top: 30px;
+}
+.modal-wide{
+    max-width: 600px;
+}
