@@ -1,12 +1,7 @@
 <?php
 
-include("../../info.php");
-//$transTbl = "trans";
-//$transTblOld = "trans91_18";
-//$faxTbl = "faxtr";
-//$faxTblOld = "faxtr94_17";
-//$pbillTbl = "pbill";
-//$pbillTblOld = "pbill01_18";
+//include("../../info.php");
+include("info.php");
 
 /**  Get and Set initial values */
 
@@ -92,13 +87,20 @@ if ($q){
         $mainQuery .= "InvoiceNo = '$invoiceNo' AND";
     }
 
-    /** remove trailing " AND " */
+    /** remove trailing " AND " or " WHERE " */
     $mainQuery = preg_replace('/\W\w+\s*(\W*)$/', '$1', $mainQuery);
 
     /** include records from the past by union with search from *TblOld */
     $oldQuery = str_replace("$tableName", "$tableNameOld", $mainQuery);
     $mainQuery .= " UNION $oldQuery";
-
+}
+/** if q is passed in (submit form from index.html) then we limit by 1000, otherwise assume last */
+$mainQuery .= " ORDER BY $firstCol";
+if($q){
+    $mainQuery .= " DESC LIMIT 1000";
+}
+else{
+    $mainQuery .= " DESC LIMIT 1";
 }
 
 ?>
@@ -134,9 +136,7 @@ if ($q){
 
         </table>
         <?php
-        if($q){
-            echo "$mainQuery<br>$tableName<br>type = $type<br>$transTbl";
-        }
+            echo "$mainQuery";
         ?>
     </div>
 
