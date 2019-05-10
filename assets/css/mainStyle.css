@@ -6,7 +6,7 @@
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
 }
-h2{
+h2.main-page{
     margin-bottom: 50px;
 }
 .trBtn{
@@ -22,4 +22,17 @@ h2{
 }
 .modal-wide{
     max-width: 600px;
+}
+h2.top-sm{
+    margin-top: 10px;
+}
+.table-wrapper{
+    display: block;
+    height: 75vh;
+    overflow-y: auto;
+}
+thead.sticky-top{
+    position: sticky;
+    top: 0;
+    background-color: #8eb3eb;
 }

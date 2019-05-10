@@ -21,7 +21,7 @@
 
     <div class="container">
         <div id="mainBody">
-            <h2 class="font-italic font-weight-bold text-center">DEI Transmittal System</h2>
+            <h2 class="font-italic font-weight-bold text-center main-page">DEI Transmittal System</h2>
             <div class="row text-center">
                 <div class="col-md-3">
                     <div class="dropdown">
@@ -29,7 +29,7 @@
                             Transmittal
                         </button>
                         <div class="dropdown-menu" aria-labelledby="trDrop">
-                            <a class="dropdown-item" href="#">Last</a>
+                            <a class="dropdown-item" href="assets/php/mainSearch.php?type=1">Last</a>
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#trSearch">Search</a>
                         </div>
                     </div>
@@ -40,8 +40,8 @@
                             Fax Transmittal
                         </button>
                         <div class="dropdown-menu" aria-labelledby="faxDrop">
-                            <a class="dropdown-item" href="#">Last</a>
-                            <a class="dropdown-item" href="#">Search</a>
+                            <a class="dropdown-item" href="assets/php/mainSearch.php?type=2">Last</a>
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#faxSearch">Search</a>
                         </div>
                     </div>
                 </div>
@@ -51,8 +51,8 @@
                             Bill Plots
                         </button>
                         <div class="dropdown-menu" aria-labelledby="billDrop">
-                            <a class="dropdown-item" href="#">Last</a>
-                            <a class="dropdown-item" href="#">Search</a>
+                            <a class="dropdown-item" href="assets/php/mainSearch.php?type=3">Last</a>
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#pbSearch">Search</a>
                             <a class="dropdown-item" href="#">Plotting Prices</a>
                         </div>
                     </div>
@@ -187,6 +187,113 @@
                             <label for="trSignature" class="col-sm-3">Signature:</label>
                             <div class="col-sm-9">
                                 <input type="text" id="trSignature" name="signature" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <input type="submit" class="btn btn-primary" value="Search">
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Fax Transmittal Search-->
+    <div class="modal fade" id="faxSearch" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Search Fax Transmittals</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="assets/php/mainSearch.php" method="post">
+                        <input type="hidden" name="type" value="2">
+                        <div class="form-group row">
+                            <label for="faxStart" class="col-sm-3">Start Date:</label>
+                            <div class="col-sm-9">
+                                <input type="date" id="faxStart" name="startDate" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="faxEnd" class="col-sm-3">End Date:</label>
+                            <div class="col-sm-9">
+                                <input type="date" id="faxEnd" name="endDate" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="faxJn" class="col-sm-3">Job Number:</label>
+                            <div class="col-sm-9">
+                                <input type="text" id="faxJn" name="jobNumber" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="faxCode" class="col-sm-3">Client Code:</label>
+                            <div class="col-sm-9">
+                                <input type="text" id="faxCode" name="clientCode" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="faxSignature" class="col-sm-3">Signature:</label>
+                            <div class="col-sm-9">
+                                <input type="text" id="faxSignature" name="signature" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <input type="submit" class="btn btn-primary" value="Search">
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- Bill Plot Search -->
+    <div class="modal fade" id="pbSearch" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Search Bill Plots</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="assets/php/mainSearch.php" method="post">
+                        <input type="hidden" name="type" value="3">
+                        <div class="form-group row">
+                            <label for="pbStart" class="col-sm-3">Start Date:</label>
+                            <div class="col-sm-9">
+                                <input type="date" id="pbStart" name="startDate" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="pbEnd" class="col-sm-3">End Date:</label>
+                            <div class="col-sm-9">
+                                <input type="date" id="pbEnd" name="endDate" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="pbJn" class="col-sm-3">Job Number:</label>
+                            <div class="col-sm-9">
+                                <input type="text" id="pbJn" name="jobNumber" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="pbCode" class="col-sm-3">Client Code:</label>
+                            <div class="col-sm-9">
+                                <input type="text" id="pbCode" name="clientCode" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="pbInvoice" class="col-sm-3">InvoiceNo:</label>
+                            <div class="col-sm-9">
+                                <input type="text" id="pbInvoice" name="invoiceNo" class="form-control form-control-sm">
                             </div>
                         </div>
                         <div class="modal-footer">
