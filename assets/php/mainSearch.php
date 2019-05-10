@@ -1,26 +1,57 @@
 <?php
 
-require_once("../../info.php");
+include("../../info.php");
+//$transTbl = "trans";
+//$transTblOld = "trans91_18";
+//$faxTbl = "faxtr";
+//$faxTblOld = "faxtr94_17";
+//$pbillTbl = "pbill";
+//$pbillTblOld = "pbill01_18";
+
+/**  Get and Set initial values */
+
+//these are flags indicating whether or not we pass in search constraints and for determining if we're looking for the last item
+$q = false;
+$last = false;
 
 $startDate = "";
-if(array_key_exists('startDate', $_POST)) $startDate = $_POST['startDate'];
+if(array_key_exists('startDate', $_POST)) {$startDate = $_POST['startDate']; $q = true; }
 $endDate = "";
-if(array_key_exists('endDate', $_POST)) $endDate = $_POST['endDate'];
+if(array_key_exists('endDate', $_POST)) {$endDate = $_POST['endDate']; $q = true; }
 $jobNumber = "";
-if(array_key_exists('jobNumber', $_POST)) $jobNumber = $_POST['jobNumber'];
+if(array_key_exists('jobNumber', $_POST)) {$jobNumber = $_POST['jobNumber']; $q = true; }
 $clientCode = "";
-if(array_key_exists('clientCode', $_POST)) $clientCode = $_POST['clientCode'];
+if(array_key_exists('clientCode', $_POST)) {$clientCode = $_POST['clientCode']; $q = true; }
 $signature = "";
-if(array_key_exists('signature', $_POST)) $signature = $_POST['signature'];
+if(array_key_exists('signature', $_POST)) {$signature = $_POST['signature']; $q = true; }
 $invoiceNo = "";
-if(array_key_exists('invoiceNo', $_POST)) $invoiceNo = $_POST['invoiceNo'];
-//
-$type = "";
-//if(array_key_exists('type', $_POST)) $type = $_POST['type'];
+if(array_key_exists('invoiceNo', $_POST)) {$invoiceNo = $_POST['invoiceNo']; $q = true; }
 
+$type = 0;
+if(array_key_exists('type', $_POST)) $type = intval($_POST['type']);
+
+$tableName = $tableNameOld = "";
 $firstCol = "Serialno";
-if($type === 3)
-    $firstCol = "InvoiceNo";
+
+switch($type){
+    case 1:
+        $tableName = $transTbl;
+        $tableNameOld = $transTblOld;
+        break;
+    case 2:
+        $tableName = $faxTbl;
+        $tableNameOld = $faxTblOld;
+        break;
+    case 3:
+        $tableName = $pbillTbl;
+        $tableNameOld = $pbillTblOld;
+        $firstCol = "InvoiceNo";
+        break;
+    default:
+        $tableName = $transTbl;
+        $tableNameOld = $transTblOld;
+        $firstCol = "Serialno";
+}
 
 $conn = new mysqli($host, $user, $password, $defaultTbl);
 
@@ -29,7 +60,46 @@ if($conn->errno){
     exit();
 }
 
+/** @var  $mainQuery | build string for SQL query */
+$mainQuery = "SELECT * FROM $tableName";
 
+if ($q){
+    $mainQuery .= " WHERE ";
+
+    /** Add WHERE clause */
+    if($startDate){
+        $mainQuery .= "DATE(Date) >= DATE('";
+        $d1 = new DateTime($startDate);
+        $mainQuery .= $d1->format('Y-m-d');
+        $mainQuery .= "') AND ";
+    }
+    if($endDate){
+        $mainQuery .= "DATE(Date) <= DATE('";
+        $d1 = new DateTime($endDate);
+        $mainQuery .= $d1->format('Y-m-d');
+        $mainQuery .= "') AND ";
+    }
+    if($jobNumber){
+        $mainQuery .= "Jn LIKE '$jobNumber%' AND ";
+    }
+    if($clientCode){
+        $mainQuery .= "Code = '$clientCode' AND ";
+    }
+    if($signature){
+        $mainQuery .= "Signed = '$signature' AND ";
+    }
+    if($invoiceNo){
+        $mainQuery .= "InvoiceNo = '$invoiceNo' AND";
+    }
+
+    /** remove trailing " AND " */
+    $mainQuery = preg_replace('/\W\w+\s*(\W*)$/', '$1', $mainQuery);
+
+    /** include records from the past by union with search from *TblOld */
+    $oldQuery = str_replace("$tableName", "$tableNameOld", $mainQuery);
+    $mainQuery .= " UNION $oldQuery";
+
+}
 
 ?>
 <!DOCTYPE html>
@@ -63,6 +133,11 @@ if($conn->errno){
             </thead>
 
         </table>
+        <?php
+        if($q){
+            echo "$mainQuery<br>$tableName<br>type = $type<br>$transTbl";
+        }
+        ?>
     </div>
 
 
