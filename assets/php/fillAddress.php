@@ -16,6 +16,42 @@ if($conn->errno){
     exit();
 }
 
-$query = "SELECT client_code, job_name_1, job_name_2, client_num WHERE jn = '$jobNumber'";
+$retArr = [];
+
+if($jobNumber) {
+    $query = "SELECT client_code, job_name_1, job_name_2, client_num FROM tc.job_name WHERE jn = '$jobNumber'";
+
+    $result = $conn->query($query);
+    $row = $result->fetch_array();
+    $clientCode = $row['client_code'];
+
+    $retArr['clientCode'] = $clientCode;
+    $retArr['jn1'] = $row['job_name_1'];
+    $retArr['jn2'] = $row['job_name_2'];
+    $retArr['clientNumber'] = $row['client_num'];
+}
+
+$query = "SELECT company, addr1, addr2, city, state, zip, fax FROM tc.clients WHERE code = '$clientCode'";
+$namesQuery = "SELECT `name` FROM tc.clnames WHERE code = '$clientCode' AND `name` NOT LIKE '%Cell%'";
+$result = $conn->query($query);
+$row = $result->fetch_array();
+
+$retArr['company'] = $row['company'];
+$retArr['addr1'] = $row['addr1'];
+$retArr['addr2'] = $row['addr2'];
+$retArr['city'] = $row['city'];
+$retArr['state'] = $row['state'];
+$retArr['zip'] = $row['zip'];
+$retArr['fax'] = $row['fax'];
+
+$names = $conn->query($namesQuery);
+
+$nameArr = [];
+while($nrow = $names->fetch_array()){
+    $nameArr[] = $nrow['name'];
+}
+$retArr['names'] = $nameArr;
 
 $conn->close();
+
+echo json_encode($retArr);

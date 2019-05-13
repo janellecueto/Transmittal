@@ -45,9 +45,9 @@ if($conn->errno){
         <div class="form-group row">
             <div class="col-md-8">
                 <div class="row">
-                    <div class="col-4"><input type="text" class="form-control form-control-sm" name="jobNumber" placeholder="Job Number"></div>
-                    <div class="col-4"><input type="text" class="form-control form-control-sm" name="clientCode" placeholder="Client Code"></div>
-                    <div class="col-4"><input type="text" class="form-control form-control-sm" name="clientNumber" placeholder="Client Number"></div>
+                    <div class="col-4"><input type="text" class="form-control form-control-sm" name="jobNumber" id="jobNumber" placeholder="Job Number"></div>
+                    <div class="col-4"><input type="text" class="form-control form-control-sm" name="clientCode" id="clientCode" placeholder="Client Code"></div>
+                    <div class="col-4"><input type="text" class="form-control form-control-sm" name="clientNumber" id="clientNumber" placeholder="Client Number"></div>
                 </div>
             </div>
             <div class="col-md-4 text-right">
@@ -61,15 +61,16 @@ if($conn->errno){
         </div>
         <div class="form-group row">
             <div class="col-md-6">
-                <input type="text" class="form-control form-control-sm" name="company" placeholder="Company">
-                <input type="text" class="form-control form-control-sm" name="addr1" placeholder="Address Line 1">
-                <input type="text" class="form-control form-control-sm" name="addr2" placeholder="Address Line 2">
-                <input type="text" class="form-control form-control-sm" name="city" placeholder="City">
+                <input type="text" class="form-control form-control-sm" name="company" id="company" placeholder="Company">
+                <input type="text" class="form-control form-control-sm" name="addr1" id="addr1" placeholder="Address Line 1">
+                <input type="text" class="form-control form-control-sm" name="addr2" id="addr2" placeholder="Address Line 2">
+                <input type="text" class="form-control form-control-sm" name="city" id="city" placeholder="City">
                 <div class="row">
-                    <div class="col-2"><input type="text" class="form-control form-control-sm" name="state" placeholder="State"></div>
-                    <div class="col-3"><input type="text" class="form-control form-control-sm" name="zip" placeholder="Zip"></div>
+                    <div class="col-2"><input type="text" class="form-control form-control-sm" name="state" id="state" placeholder="State"></div>
+                    <div class="col-3"><input type="text" class="form-control form-control-sm" name="zip" is="zip" placeholder="Zip"></div>
                 </div>
-                <input type="text" class="form-control form-control-sm" name="attention" placeholder="Attention">
+                <input type="text" class="form-control form-control-sm" name="attention" placeholder="Attention" list="clientNames">
+                <datalist id="clientNames"></datalist>
             </div>
             <div class="col-md-6">
                 <label for="project">Project</label>
@@ -291,11 +292,33 @@ if($conn->errno){
         let xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function(){
             if(this.readyState === 4 && this.status === 200){
-                let data = xhttp.response();
+                let data = JSON.parse(xhttp.response());
+                if(flag === "jobNumber"){
+                    $("#clientCode").val(data["clientCode"]);
+                    $("#clientNumber").val(data["clientNumber"]);
+
+                    let projStr = data["jn1"];
+                    if(data["jn2"]) projStr += data["jn2"];
+                    $("#project").text(projStr);
+                }
+                $("#company").val(data["company"]);
+                $("#addr1").val(data["addr1"]);
+                $("#addr2").val(data["addr2"]);
+                $("#city").val(data["city"]);
+                $("#state").val(data["state"]);
+                $("#zip").val(data["zip"]);
+                alert("handleAutoFill");
             }
-        }
+        };
+        xhttp.open("get", "../assets/php/fillAddress.php?"+flag+"="+value, true);
+        xhttp.send();
 
     }
+
+    $("#jobNumber").change(function(){
+        alert("jobNumber onchange");
+        handleAutoFill($(this).val(), "jobNumber");
+    });
 
 </script>
 </body>
