@@ -1,5 +1,5 @@
 <?php
-include("info.php");
+include("../assets/php/info.php");
 
 $id = 0;
 if(array_key_exists('id', $_GET)) $id = intval($_GET['id']);
@@ -53,7 +53,9 @@ if($conn->errno){
             <div class="col-md-4 text-right">
                 <div class="row">
                     <label for="date" class="col-6">Date:</label>
-                    <div class="col-6"><input type="date" class="form-control form-control-sm" name="date" id="date"></div>
+                    <div class="col-6">
+                        <input type="date" class="form-control form-control-sm" name="date" id="date" value="<?php echo date('Y-m-d');?>">
+                    </div>
                 </div>
             </div>
         </div>
@@ -81,7 +83,7 @@ if($conn->errno){
                     <label for="atch" class="form-check-label">Attached</label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input type="radio" class="form-check-input" name="rBtn" id="sepr" value="Under separate cover" checked >
+                    <input type="radio" class="form-check-input" name="rBtn" id="sepr" value="Under separate cover">
                     <label for="sepr" class="form-check-label">Under Separate Cover</label>
                 </div>
             </div>
@@ -279,6 +281,21 @@ if($conn->errno){
 
         $addWrapper.append(newRow);
     });
+
+    function clearFields(){
+        $("#clientName").val("");
+    }
+
+    function handleAutoFill(value, flag){
+        clearFields();
+        let xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function(){
+            if(this.readyState === 4 && this.status === 200){
+                let data = xhttp.response();
+            }
+        }
+
+    }
 
 </script>
 </body>
