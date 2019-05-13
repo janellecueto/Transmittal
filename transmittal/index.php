@@ -33,6 +33,7 @@ if(array_key_exists('id', $_GET)) $id = intval($_GET['id']);
             width: 50%;
             margin: auto;
         }
+        #addNew{margin: auto;}
     </style>
 </head>
 
@@ -149,7 +150,64 @@ if(array_key_exists('id', $_GET)) $id = intval($_GET['id']);
             <label for="remarks">Remarks</label>
             <textarea id="remarks" name="remarks" class="form-control" placeholder="Insert comments/remarks"></textarea>
         </div>
-
+        <div class="form-group row">
+            <table class="table table-borderless table-sm">
+                <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">Company</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Trans only</th>
+                    <th scope="col">Print Label</th>
+                    <th scope="col">Print Envelope</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row">COPY TO</th>
+                    <td style="width: 25%;"><input type="text" class="form-control form-control-sm" name="extrComp"></td>
+                    <td style="width: 25%;"><input type="text" class="form-control form-control-sm" name="extrName"></td>
+                    <td class="text-center"><input type="checkbox" class="form-check-input" name="trOnly"></td>
+                    <td class="text-center"><input type="checkbox" class="form-check-input" name="copyLbl"></td>
+                    <td class="text-center"><input type="checkbox" class="form-check-input" name="copyEnv"></td>
+                </tr>
+                <tr>
+                    <th scope="row"></th>
+                    <td style="width: 25%;"><input type="text" class="form-control form-control-sm" name="extrComp"></td>
+                    <td style="width: 25%;"><input type="text" class="form-control form-control-sm" name="extrName"></td>
+                    <td class="text-center"><input type="checkbox" class="form-check-input" name="trOnly"></td>
+                    <td class="text-center"><input type="checkbox" class="form-check-input" name="copyLbl"></td>
+                    <td class="text-center"><input type="checkbox" class="form-check-input" name="copyEnv"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="form-group row">
+            <div class="col">
+                <div class="form-inline row">
+                    <label for="dupl" class="col-3"># of Duplicates</label>
+                    <input type="text" id="dupl" name="dupl" class="form-control form-control-sm">
+                </div>
+                <div class="form-inline row">
+                    <label for="printLblMain" class="col-3">Print Label</label>
+                    <input type="checkbox" class="form-check-input" id="printLblMain">
+                </div>
+                <div class="form-inline row">
+                    <label for="printEnvMain" class="col-3">Print Envelope</label>
+                    <input type="checkbox" class="form-check-input" id="printEnvMain">
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group row">
+                    <label for="signed" class="col-4 text-right">Signed</label>
+                    <div class="col-8"><input type="text" id="signed" class="form-control form-control-sm"></div>
+                </div>
+                <div class="row">
+                    <a href="../" class="btn btn-secondary btn-sm" style="margin-left: auto;">Cancel</a>
+                    <input type="submit" class="btn btn-primary btn-sm" style="margin-left: 5px;" value="Print">
+                </div>
+            </div>
+        </div>
     </form>
 </div>
 </div>
