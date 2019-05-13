@@ -10,6 +10,8 @@ if($conn->errno){
     exit();
 }
 
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -235,6 +237,8 @@ if($conn->errno){
 
     $("#dupl").mask("#0"); //limit to 99 duplicates :)
     $(".num").mask("#");
+
+
 
 
     $("#addNew").click(function(){
