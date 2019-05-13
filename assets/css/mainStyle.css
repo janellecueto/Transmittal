@@ -1,7 +1,7 @@
 #mainBody{
     position: absolute;
     width: 80%;
-    max-width: 710px;
+    max-width: 730px;
     top: 40%;
     left: 50%;
     transform: translateX(-50%) translateY(-50%);

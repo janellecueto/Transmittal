@@ -24,41 +24,44 @@
             <h2 class="font-italic font-weight-bold text-center main-page">DEI Transmittal System</h2>
             <div class="row text-center">
                 <div class="col-md-3">
-                    <div class="dropdown">
-                        <button class="btn btn-primary btn-block dropdown-toggle" type="button" id="trDrop" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Transmittal
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary" onclick="location.href='./transmittal';">Transmittal</button>
+                        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="sr-only">Toggle Dropdown</span>
                         </button>
-                        <div class="dropdown-menu" aria-labelledby="trDrop">
+                        <div class="dropdown-menu">
                             <a class="dropdown-item" href="assets/php/mainSearch.php?type=1">Last</a>
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#trSearch">Search</a>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="dropdown">
-                        <button class="btn btn-primary btn-block dropdown-toggle" type="button" id="faxDrop" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Fax Transmittal
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary">Fax Transmittal</button>
+                        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="sr-only">Toggle Dropdown</span>
                         </button>
-                        <div class="dropdown-menu" aria-labelledby="faxDrop">
+                        <div class="dropdown-menu">
                             <a class="dropdown-item" href="assets/php/mainSearch.php?type=2">Last</a>
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#faxSearch">Search</a>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="dropdown">
-                        <button class="btn btn-primary btn-block dropdown-toggle" type="button" id="billDrop" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Bill Plots
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary">Bill Plots</button>
+                        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="sr-only">Toggle Dropdown</span>
                         </button>
-                        <div class="dropdown-menu" aria-labelledby="billDrop">
+                        <div class="dropdown-menu">
                             <a class="dropdown-item" href="assets/php/mainSearch.php?type=3">Last</a>
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#pbSearch">Search</a>
-                            <a class="dropdown-item" href="#">Plotting Prices</a>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <a class="btn btn-primary btn-block" href="#">Envelope/Label</a>
+                    <a class="btn btn-primary " href="#">Envelope/Label</a>
                 </div>
             </div>
             <div class="settings text-center">
