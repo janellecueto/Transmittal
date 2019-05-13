@@ -67,7 +67,7 @@ if($conn->errno){
                 <input type="text" class="form-control form-control-sm" name="city" id="city" placeholder="City">
                 <div class="row">
                     <div class="col-2"><input type="text" class="form-control form-control-sm" name="state" id="state" placeholder="State"></div>
-                    <div class="col-3"><input type="text" class="form-control form-control-sm" name="zip" is="zip" placeholder="Zip"></div>
+                    <div class="col-3"><input type="text" class="form-control form-control-sm" name="zip" id="zip" placeholder="Zip"></div>
                 </div>
                 <input type="text" class="form-control form-control-sm" name="attention" placeholder="Attention" list="clientNames">
                 <datalist id="clientNames"></datalist>
@@ -170,16 +170,22 @@ if($conn->errno){
                 <tbody>
                 <tr>
                     <th scope="row">COPY TO</th>
-                    <td style="width: 25%;"><input type="text" class="form-control form-control-sm" name="extrComp[]"></td>
-                    <td style="width: 25%;"><input type="text" class="form-control form-control-sm" name="extrName[]"></td>
+                    <td style="width: 25%;"><input type="text" class="form-control form-control-sm extraComp" name="extraComp[]" data-list="extraNames1"></td>
+                    <td style="width: 25%;">
+                        <input type="text" class="form-control form-control-sm" name="extraName[]" list="extraNames1">
+                        <datalist id="extraNames1"></datalist>
+                    </td>
                     <td class="text-center"><input type="checkbox" class="form-check-input" name="trOnly[]" value="tr1"></td>
                     <td class="text-center"><input type="checkbox" class="form-check-input" name="copyLbl[]" value="lbl1"></td>
                     <td class="text-center"><input type="checkbox" class="form-check-input" name="copyEnv[]" value="env1"></td>
                 </tr>
                 <tr>
                     <th scope="row"></th>
-                    <td style="width: 25%;"><input type="text" class="form-control form-control-sm" name="extraComp[]"></td>
-                    <td style="width: 25%;"><input type="text" class="form-control form-control-sm" name="extraName[]"></td>
+                    <td style="width: 25%;"><input type="text" class="form-control form-control-sm extraComp" name="extraComp[]" data-list="extraNames2"></td>
+                    <td style="width: 25%;">
+                        <input type="text" class="form-control form-control-sm" name="extraName[]" list="extraNames2">
+                        <datalist id="extraNames2"></datalist>
+                    </td>
                     <td class="text-center"><input type="checkbox" class="form-check-input" name="trOnly[]" value="tr2"></td>
                     <td class="text-center"><input type="checkbox" class="form-check-input" name="copyLbl[]" value="lbl2"></td>
                     <td class="text-center"><input type="checkbox" class="form-check-input" name="copyEnv[]" value="env2"></td>
@@ -205,7 +211,10 @@ if($conn->errno){
             <div class="col">
                 <div class="form-group row">
                     <label for="signed" class="col-4 text-right">Signed</label>
-                    <div class="col-8"><input type="text" id="signed" class="form-control form-control-sm" required></div>
+                    <div class="col-8">
+                        <input type="text" id="signed" class="form-control form-control-sm" list="deiEmps" required>
+                        <datalist id="deiEmps"></datalist>
+                    </div>
                 </div>
                 <div class="row">
                     <a href="../" class="btn btn-secondary btn-sm" style="margin-left: auto;">Cancel</a>
@@ -283,16 +292,16 @@ if($conn->errno){
         $addWrapper.append(newRow);
     });
 
-    function clearFields(){
-        $("#clientName").val("");
-    }
-
-    function handleAutoFill(value, flag){
-        clearFields();
-        let xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function(){
-            if(this.readyState === 4 && this.status === 200){
-                let data = JSON.parse(xhttp.response());
+    function addrFill(value, flag){
+        $.ajax({
+            type: "GET",
+            url: "../assets/php/fillAddress.php",
+            data: {
+                value: value,
+                flag: flag
+            },
+            success: function(result){
+                let data = JSON.parse(result);
                 if(flag === "jobNumber"){
                     $("#clientCode").val(data["clientCode"]);
                     $("#clientNumber").val(data["clientNumber"]);
@@ -307,18 +316,65 @@ if($conn->errno){
                 $("#city").val(data["city"]);
                 $("#state").val(data["state"]);
                 $("#zip").val(data["zip"]);
-                alert("handleAutoFill");
-            }
-        };
-        xhttp.open("get", "../assets/php/fillAddress.php?"+flag+"="+value, true);
-        xhttp.send();
 
+                let clnames = $("#clientNames");
+                data["names"].forEach(function(item){
+                    var opt = $("<option>");
+                    opt.val(item).text(item);
+                    clnames.append(opt);
+                 });
+
+            },
+            error: function(result){
+                alert("error: "+result);
+            }
+        })
     }
 
-    $("#jobNumber").change(function(){
-        alert("jobNumber onchange");
-        handleAutoFill($(this).val(), "jobNumber");
+    function copyToFill(input, value){
+        $.ajax({
+            type: "GET",
+            url: "../assets/php/fillAddress.php",
+            data: {
+                value: value,
+                flag: "clientCode"
+            },
+            success: function(result){
+                let data = JSON.parse(result);
+                input.val(data["company"]);
+                let clnames = $("#"+input.attr("data-list"));
+                alert(input.attr("data-list"));
+                data["names"].forEach(function(item){
+                    var opt = $("<option>");
+                    opt.val(item).text(item);
+                    clnames.append(opt);
+                });
+            },
+            error: function(result){
+                alert("error: "+result);
+            }
+        })
+    }
+
+    $("#jobNumber").change(function(e){
+        e.preventDefault();
+        $("#clientCode").val("");
+        $("#clientNames").empty();
+        addrFill($(this).val(), "jobNumber");
     });
+    $("#clientCode").change(function(e){
+        e.preventDefault();
+        $("#clientNames").empty();
+        addrFill($(this).val(), "clientCode");
+    });
+    $(".extraComp").change(function(e){
+        e.preventDefault();
+        $("#"+$(this).attr("data-list")).empty();
+        copyToFill($(this), $(this).val());
+    });
+
+
+
 
 </script>
 </body>

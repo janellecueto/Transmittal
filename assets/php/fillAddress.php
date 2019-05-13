@@ -7,8 +7,12 @@ include("info.php");
 $jobNumber = "";
 $clientCode = "";
 
-if(array_key_exists("jobNumber", $_GET)) $jobNumber = $_GET['jobNumber'];
-if(array_key_exists("clientCode", $_GET)) $clientCode = $_GET['clientCode'];
+//if(array_key_exists("jobNumber", $_GET)) $jobNumber = $_GET['jobNumber'];
+//if(array_key_exists("clientCode", $_GET)) $clientCode = $_GET['clientCode'];
+$flag = $_GET['flag'];
+$value = $_GET['value'];
+if($flag == "jobNumber") $jobNumber = $value;
+else if($flag == "clientCode") $clientCode = $value;
 
 $conn = new mysqli($host, $user, $password, $defaultTbl);
 if($conn->errno){
