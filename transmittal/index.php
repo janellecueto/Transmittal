@@ -4,11 +4,11 @@ include("info.php");
 $id = 0;
 if(array_key_exists('id', $_GET)) $id = intval($_GET['id']);
 
-//$conn = new mysqli($host, $user, $password, $defaultTbl);
-//if($conn->errno){
-//    echo "<br>Error: ".$conn->error;
-//    exit();
-//}
+$conn = new mysqli($host, $user, $password, $defaultTbl);
+if($conn->errno){
+    echo "<br>Error: ".$conn->error;
+    exit();
+}
 
 ?>
 <!DOCTYPE html>
@@ -41,7 +41,7 @@ if(array_key_exists('id', $_GET)) $id = intval($_GET['id']);
 <div class="container">
     <h2 class="top-sm">Transmittal Form</h2>
 <div class="form-wrapper">
-    <form>
+    <form action="print.php" method="post">
         <div class="form-group row">
             <div class="col-md-8">
                 <div class="row">
@@ -77,11 +77,11 @@ if(array_key_exists('id', $_GET)) $id = intval($_GET['id']);
         <div class="form-group row mid">
             <div class="col-md-4">
                 <div class="form-check form-check-inline">
-                    <input type="radio" class="form-check-input" name="rBtn" id="atch" checked >
+                    <input type="radio" class="form-check-input" name="rBtn" id="atch" value="Attached" checked >
                     <label for="atch" class="form-check-label">Attached</label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input type="radio" class="form-check-input" name="rBtn" id="sepr" checked >
+                    <input type="radio" class="form-check-input" name="rBtn" id="sepr" value="Under separate cover" checked >
                     <label for="sepr" class="form-check-label">Under Separate Cover</label>
                 </div>
             </div>
@@ -89,7 +89,7 @@ if(array_key_exists('id', $_GET)) $id = intval($_GET['id']);
                 <div class="row">
                     <label for="via" class="col-1">Via</label>
                     <div class="col-5">
-                        <select class="form-control form-control-sm">
+                        <select class="form-control form-control-sm" id="via" name="via">
                             <option value="FED EXPRESS">FedEx</option>
                             <option value="HAND DELIVERED">Hand Delivered</option>
                             <option value="MAIL">Mail</option>
@@ -104,47 +104,49 @@ if(array_key_exists('id', $_GET)) $id = intval($_GET['id']);
         </div>
         <div class="form-group row sml" style="margin-bottom: 1rem;">
             <div class="form-check form-check-inline">
-                <input type="checkbox" class="form-check-input" name="items" id="sdcheck" value="Shop Drawings" >
+                <input type="checkbox" class="form-check-input" name="items[]" id="sdcheck" value="Shop Drawings" >
                 <label for="sdcheck" class="form-check-label">Shop Drawings</label>
             </div>
             <div class="form-check form-check-inline">
-                <input type="checkbox" class="form-check-input" name="items" id="pcheck" value="Prints" checked>
+                <input type="checkbox" class="form-check-input" name="items[]" id="pcheck" value="Prints" checked>
                 <label for="pcheck" class="form-check-label">Prints</label>
             </div>
             <div class="form-check form-check-inline">
-                <input type="checkbox" class="form-check-input" name="items" id="clcheck" value="Copy of letter" >
+                <input type="checkbox" class="form-check-input" name="items[]" id="clcheck" value="Copy of letter" >
                 <label for="clcheck" class="form-check-label">Copy of letter</label>
             </div>
             <div class="form-check form-check-inline">
-                <input type="checkbox" class="form-check-input" name="items" id="cocheck" value="Change order" >
+                <input type="checkbox" class="form-check-input" name="items[]" id="cocheck" value="Change order" >
                 <label for="cocheck" class="form-check-label">Change order</label>
             </div>
             <div class="form-check form-check-inline">
-                <input type="checkbox" class="form-check-input" name="items" id="plcheck" value="Plans" >
+                <input type="checkbox" class="form-check-input" name="items[]" id="plcheck" value="Plans" >
                 <label for="plcheck" class="form-check-label">Plans</label>
             </div>
             <div class="form-check form-check-inline">
-                <input type="checkbox" class="form-check-input" name="items" id="speccheck" value="Specifications" >
+                <input type="checkbox" class="form-check-input" name="items[]" id="speccheck" value="Specifications" >
                 <label for="speccheck" class="form-check-label">Specifications</label>
             </div>
             <div class="form-check form-check-inline">
-                <input type="checkbox" class="form-check-input" name="items" id="scheck" value="Samples" >
+                <input type="checkbox" class="form-check-input" name="items[]" id="scheck" value="Samples" >
                 <label for="scheck" class="form-check-label">Samples</label>
             </div><br>
             <div class="form-check form-check-inline">
-                <input type="checkbox" class="form-check-input" name="items" id="othercheck" >
+                <input type="checkbox" class="form-check-input" name="items[]" id="othercheck" value="Other">
                 <label for="othercheck" class="form-check-label" style="margin-right: 5px;">Other:</label>
                 <input type="text" class="form-control form-control-sm" id="othertext" placeholder="(Please specify)">
             </div>
         </div>
-        <div class="form-group row mid" id="addWrapper" style="margin-bottom: 1rem;">
-            <div class="col-sm-2"><input type="text" class="form-control form-control-sm" name="copies" placeholder="Copies"></div>
-            <div class="col-sm-2"><input type="text" class="form-control form-control-sm" name="date" placeholder="Date"></div>
-            <div class="col-sm-2"><input type="text" class="form-control form-control-sm" name="number" placeholder="Number"></div>
-            <div class="col-sm-6"><input type="text" class="form-control form-control-sm" name="descript" placeholder="Description"></div>
+        <div class="form-group mid" id="addWrapper" style="margin-bottom: 1rem;">
+            <div class="row">
+                <div class="col-sm-2"><input type="text" class="form-control form-control-sm num" name="copies[]" placeholder="Copies"></div>
+                <div class="col-sm-2"><input type="date" class="form-control form-control-sm" name="dates[]"></div>
+                <div class="col-sm-2"><input type="text" class="form-control form-control-sm num" name="numbers[]" placeholder="Number"></div>
+                <div class="col-sm-6"><input type="text" class="form-control form-control-sm" name="descriptions[]" placeholder="Description"></div>
+            </div>
         </div>
-        <div class="form-group row text-center">
-            <button id="addNew" class="btn btn-primary btn-sm">Add New</button>
+        <div class="row text-center">
+            <button type="button" id="addNew" class="btn btn-primary btn-sm">Add New</button>
         </div>
         <div class="form-group row sml">
             <label for="remarks">Remarks</label>
@@ -165,19 +167,19 @@ if(array_key_exists('id', $_GET)) $id = intval($_GET['id']);
                 <tbody>
                 <tr>
                     <th scope="row">COPY TO</th>
-                    <td style="width: 25%;"><input type="text" class="form-control form-control-sm" name="extrComp"></td>
-                    <td style="width: 25%;"><input type="text" class="form-control form-control-sm" name="extrName"></td>
-                    <td class="text-center"><input type="checkbox" class="form-check-input" name="trOnly"></td>
-                    <td class="text-center"><input type="checkbox" class="form-check-input" name="copyLbl"></td>
-                    <td class="text-center"><input type="checkbox" class="form-check-input" name="copyEnv"></td>
+                    <td style="width: 25%;"><input type="text" class="form-control form-control-sm" name="extrComp[]"></td>
+                    <td style="width: 25%;"><input type="text" class="form-control form-control-sm" name="extrName[]"></td>
+                    <td class="text-center"><input type="checkbox" class="form-check-input" name="trOnly[]" value="tr1"></td>
+                    <td class="text-center"><input type="checkbox" class="form-check-input" name="copyLbl[]" value="lbl1"></td>
+                    <td class="text-center"><input type="checkbox" class="form-check-input" name="copyEnv[]" value="env1"></td>
                 </tr>
                 <tr>
                     <th scope="row"></th>
-                    <td style="width: 25%;"><input type="text" class="form-control form-control-sm" name="extrComp"></td>
-                    <td style="width: 25%;"><input type="text" class="form-control form-control-sm" name="extrName"></td>
-                    <td class="text-center"><input type="checkbox" class="form-check-input" name="trOnly"></td>
-                    <td class="text-center"><input type="checkbox" class="form-check-input" name="copyLbl"></td>
-                    <td class="text-center"><input type="checkbox" class="form-check-input" name="copyEnv"></td>
+                    <td style="width: 25%;"><input type="text" class="form-control form-control-sm" name="extraComp[]"></td>
+                    <td style="width: 25%;"><input type="text" class="form-control form-control-sm" name="extraName[]"></td>
+                    <td class="text-center"><input type="checkbox" class="form-check-input" name="trOnly[]" value="tr2"></td>
+                    <td class="text-center"><input type="checkbox" class="form-check-input" name="copyLbl[]" value="lbl2"></td>
+                    <td class="text-center"><input type="checkbox" class="form-check-input" name="copyEnv[]" value="env2"></td>
                 </tr>
                 </tbody>
             </table>
@@ -200,7 +202,7 @@ if(array_key_exists('id', $_GET)) $id = intval($_GET['id']);
             <div class="col">
                 <div class="form-group row">
                     <label for="signed" class="col-4 text-right">Signed</label>
-                    <div class="col-8"><input type="text" id="signed" class="form-control form-control-sm"></div>
+                    <div class="col-8"><input type="text" id="signed" class="form-control form-control-sm" required></div>
                 </div>
                 <div class="row">
                     <a href="../" class="btn btn-secondary btn-sm" style="margin-left: auto;">Cancel</a>
@@ -217,6 +219,68 @@ if(array_key_exists('id', $_GET)) $id = intval($_GET['id']);
 <script src="../assets/js/bootstrap.bundle.js"></script>
 <script src="../assets/js/bootstrap.js"></script>
 
+<script>
+
+    $("#dupl").mask("#0"); //limit to 99 duplicates :)
+    $(".num").mask("#");
+
+
+    $("#addNew").click(function(){
+        let $addWrapper = $('#addWrapper');
+        let newRow = $("<div>");
+        newRow.addClass("row");
+
+        let copiesDiv = $("<div>");
+        copiesDiv.addClass("col-sm-2");
+        let copiesInput = $("<input>");
+        copiesInput.addClass("form-control form-control-sm num");
+        copiesInput.attr({
+            type: "text",
+            name: "copies[]",
+            placeholder: "Copies"
+        });
+        copiesDiv.append(copiesInput);
+        newRow.append(copiesDiv);
+
+        let datesDiv = $("<div>");
+        datesDiv.addClass("col-sm-2");
+        let datesInput = $("<input>");
+        datesInput.addClass("form-control form-control-sm");
+        datesInput.attr({
+            type: "date",
+            name: "dates[]",
+        });
+        datesDiv.append(datesInput);
+        newRow.append(datesDiv);
+
+        let numbersDiv = $("<div>");
+        numbersDiv.addClass("col-sm-2");
+        let numbersInput = $("<input>");
+        numbersInput.addClass("form-control form-control-sm num");
+        numbersInput.attr({
+            type: "text",
+            name: "numbers[]",
+            placeholder: "Number"
+        });
+        numbersDiv.append(numbersInput);
+        newRow.append(numbersDiv);
+
+        let descriptDiv = $("<div>");
+        descriptDiv.addClass("col-sm-6");
+        let descInput = $("<input>");
+        descInput.addClass("form-control form-control-sm");
+        descInput.attr({
+            type: "text",
+            name: "descriptions[]",
+            placeholder: "Description"
+        });
+        descriptDiv.append(descInput);
+        newRow.append(descriptDiv);
+
+        $addWrapper.append(newRow);
+    });
+
+</script>
 </body>
 </html>
 
