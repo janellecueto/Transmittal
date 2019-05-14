@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../assets/css/bootstrap-reboot.css">
+    <link rel="stylesheet" href="../assets/css/bootstrap.css">
+    <link rel="stylesheet" href="../assets/css/bootstrap-grid.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="../assets/css/mainStyle.css">
+    <title>Fax Transmittal Form</title>
+    <style>
+        div.spaced input{
+            margin-right: 3px;
+        }
+        span.description{
+            font-size: 11px; color: gray; font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="top-sm">Fax Transmittal Form</h2>
+        <div class="form-wrapper">
+            <form>
+                <div class="form-group row">
+                    <div class="col-md-5">
+                        <div class="row">
+                            <div class="col-6"><input type="text" class="form-control form-control-sm" name="jobNumber" id="jobNumber" placeholder="Job Number"></div>
+                            <div class="col-6"><input type="text" class="form-control form-control-sm" name="clietnCode" id="clietnCode" placeholder="Client Code"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="row">
+                            <label for="date" class="col-3">Date</label>
+                            <div class="col-9">
+                                <input type="date" class="form-control form-control-sm" name="date" id="date">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-5">
+                        <input type="text" class="form-control form-control-sm" name="attention" placeholder="Attention" list="attnList">
+                        <datalist id="attnList"></datalist>
+                        <input type="text" class="form-control form-control-sm" name="company" placeholder="Company">
+                        <input type="text" class="form-control form-control-sm" name="fax" placeholder="Fax Number">
+                        <input type="text" class="form-control form-control-sm" name="from" placeholder="From">
+                    </div>
+                    <div class="col-md-7">
+                        <div class="form-group row">
+                            <label for="project" class="col-3">Project</label>
+                            <div class="col-9">
+                                <textarea id="project" name="project" class="form-control"></textarea>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label for="numPages" class="col-3">No. of Pages</label>
+                            <div class="col-4"><input type="text" class="form-control form-control-sm" id="numPages" name="numPages" required></div>
+                            <div class="col-5 form-check">
+                                <input type="checkbox" id="willFollow" name="willFollow" class="form-check-input" value="1">
+                                <label for="willFollow" class="form-check-label">Will Follow</label>
+                            </div>
+                        </div>
+                        <!-- <div class="row">
+                            <div class="col-3"><span class="description">(Including cover page)</span></div>
+                        </div> -->
+                    </div>
+                </div>
+                <div class="form-group mid">
+                    <label for="remarks">Remarks</label>
+                    <textarea id="remarks" name="remarks" class="form-control"></textarea>
+                </div>
+                <div class="form-group">
+                    <table class="table table-borderless table-sm">
+                        <thead>
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col">Company</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Fax Number</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <th scope="row">COPY TO</th>
+                            <td><input type="text" class="form-control form-control-sm extraComp" name="extraComp[]" data-list="extraNames1"></td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm" name="extraName[]" list="extraNames1">
+                                <datalist id="extraNames1"></datalist>
+                            </td>
+                            <td><input type="text" class="form-control form-control-sm" name="extraFax[]"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td><input type="text" class="form-control form-control-sm extraComp" name="extraComp[]" data-list="extraNames2"></td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm" name="extraName[]" list="extraNames2">
+                                <datalist id="extraNames1"></datalist>
+                            </td>
+                            <td><input type="text" class="form-control form-control-sm" name="extraFax[]"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="form-group row">
+                    <button type="button" class="btn btn-secondary" style="margin-left: auto;">Cancel</button>
+                    <input type="submit" class="btn btn-primary" style="margin-left: 5px;" value="Print">
+                    <button type="button" class="btn btn-primary" style="margin-left: 5px;" disabled>Send Fax</button>
+                    
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

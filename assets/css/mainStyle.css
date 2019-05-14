@@ -36,3 +36,11 @@ thead.sticky-top{
     top: 0;
     background-color: #8eb3eb;
 }
+.mid{
+    width: 90%;
+    margin: auto;
+}
+.sml{
+    width: 50%;
+    margin: auto;
+}
