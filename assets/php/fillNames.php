@@ -3,7 +3,7 @@
  * This script will echo just the names given a client code. by default, use DEI
  */
 
-include("info.php");
+include("./info.php");
 
 $clientCode = "DEI";
 if(array_key_exists("clientCode", $_GET)) $clientCode = $_GET["clientCode"];
