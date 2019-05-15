@@ -7,8 +7,8 @@
     <link rel="stylesheet" href="../assets/css/bootstrap-reboot.css">
     <link rel="stylesheet" href="../assets/css/bootstrap.css">
     <link rel="stylesheet" href="../assets/css/bootstrap-grid.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay"
-          crossorigin="anonymous">
+<!--    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay"-->
+<!--          crossorigin="anonymous">-->
     <link rel="stylesheet" href="../assets/css/mainStyle.css">
     <title>Bill Plot Form</title>
     <style>
@@ -120,14 +120,16 @@
                             <td class="text-center">
                                 <input type="checkbox" class="form-check-input" name="colored[]">
                             </td>
-                            <td><input type="text" name="costs[]" class="form-control form-control-sm money" placeholder="$0.00" disabled></td>
-                            <td><input type="text" name="lineTotals[]" class="form-control form-control-sm money" placeholder="$0.00" disabled></td>
+                            <td><input type="text" name="costs[]" class="form-control form-control-sm money cost-money" placeholder="$0.00" disabled></td>
+                            <td><input type="text" name="lineTotals[]" class="form-control form-control-sm money total-money" placeholder="$0.00" disabled></td>
                         </tr>
                         </tbody>
                         <tfoot>
+                        <tr>
                             <td><button type="button" id="addRow" class="btn btn-primary btn-sm" style="margin: auto;">Add Row</button></td>
                             <th colspan="5" scope="row" class="text-right">Bill Total</th>
-                            <td><input type="text" name="total" class="form-control form-control-sm money" placeholder="$0.00" disabled></td>
+                            <td><input type="text" name="total" id="total" class="form-control form-control-sm money" placeholder="$0.00" disabled></td>
+                        </tr>
                         </tfoot>
                     </table>
                 </div>
@@ -153,10 +155,22 @@
 <script src="../assets/js/bootstrap.js"></script>
 <script src="../assets/js/main.js"></script>
 <script>
+    let sheetSizes = {
+        ss1: "24 x 36",
+        ss2: "30 x 42",
+        ss3: "36 x 48",
+        ss4: "8.5 x 11",
+        ss5: "11 x 17",
+        ss6: "12 x 18",
+        ss7: "15 x 21",
+        ss8: "18 x 24",
+        ss9: "22 x 34"
+    };
+
     $("input.num").mask("#");
 
     $("#addRow").click(function(){
-        let $wrapper = $("#rowWrapper");
+        let wrapper = $("#rowWrapper");
         let newRow = $("<tr>");
 
         let setsTd = $("<td>");
@@ -166,6 +180,7 @@
             type: "text",
             name: "numSets[]"
         });
+        setsIn.mask("#");
         setsTd.append(setsIn);
         newRow.append(setsTd);
 
@@ -176,6 +191,7 @@
             type: "text",
             name: "numSheets[]"
         });
+        sheetsIn.mask("#");
         sheetsTd.append(sheetsIn);
         newRow.append(sheetsTd);
 
@@ -183,9 +199,66 @@
         let sizeIn = $("<select>");
         sizeIn.addClass("form-control form-control-sm");
         sizeIn.attr("name", "sheetSizes[]");
-        
+        for (var key in sheetSizes){
+            sizeIn.append("<option value=\""+key+"\">"+sheetSizes[key]+"</option>");
+        }
+        sizeTd.append(sizeIn);
+        newRow.append(sizeTd);
+
+        let mediaTd = $("<td>");
+        let mediaIn = $("<select>");
+        mediaIn.addClass("form-control form-control-sm");
+        mediaIn.attr("name", "mediaType[]");
+        mediaIn.append("<option value=\"paper\">Paper</option>");
+        mediaTd.append(mediaIn);
+        newRow.append(mediaTd);
+
+        let colorTd = $("<td>");
+        colorTd.addClass("text-center");
+        let colorIn = $("<input>");
+        colorIn.addClass("form-check-input");
+        colorIn.attr({
+            type: "checkbox",
+            name: "colored[]"
+        });
+        colorTd.append(colorIn);
+        newRow.append(colorTd);
+
+        let costTd = $("<td>");
+        let costIn = $("<input>");
+        costIn.addClass("form-control form-control-sm money cost-money");
+        costIn.attr({
+            type: "text",
+            name: "costs[]",
+            placeholder: "$0.00",
+            disabled: true
+        });
+        costTd.append(costIn);
+        newRow.append(costTd);
+
+        let lineTd = $("<td>");
+        let lineIn = $("<input>");
+        lineIn.addClass("form-control form-control-sm money total-money");
+        lineIn.attr({
+            type: "text",
+            name: "lineTotals[]",
+            placeholder: "$0.00",
+            disabled: true
+        });
+        lineTd.append(lineIn);
+        newRow.append(lineTd);
+
+        wrapper.append(newRow);
 
     });
+
+    function updatePrices(){
+        let cost = $.closest("td").find(".cost-money");
+        let lineTotal = $.closest("td").find(".total-money");
+        let total = $("#total");
+
+
+    }
     
 </script>
 </body>
