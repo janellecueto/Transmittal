@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../assets/css/bootstrap-reboot.css">
+    <link rel="stylesheet" href="../assets/css/bootstrap.css">
+    <link rel="stylesheet" href="../assets/css/bootstrap-grid.css">
+    <link rel="stylesheet" href="../assets/css/mainStyle.css">
+    <title>Print Label/Envelope</title>
+    <style>
+    div.small-container{
+        max-width: 600px;
+    }
+    </style>
+</head>
+<body>
+    <div class="container small-container">
+        <h2 class="top-sm">Print Label/Envelope</h2>
+        <div class="form-wrapper">
+            <form>
+                <div class="form-group form-inline">
+                    <input type="text" class="form-control form-control-sm" name="jobNumber" id="jobNumber" placeholder="Job Number">
+                    <input type="text" class="form-control form-control-sm" name="clientCode" id="clientCode" placeholder = "Client Code">
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control form-control-sm" name="company" id="company" placeholder="Company">
+                    <input type="text" class="form-control form-control-sm" name="addr1" id="addr1" placeholder="Address Line 1">
+                    <input type="text" class="form-control form-control-sm" name="addr2" id="addr2" placeholder="Address Line 2">
+                    <input type="text" class="form-control form-control-sm" name="city" id="city" placeholder="City">
+                    <div class="form-inline">
+                        <input type="text" class="form-control form-control-sm" name="state" id="state" placeholder="State">
+                        <input type="text" class="form-control form-control-sm" name="zip" id="zip" placeholder="Zip">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control form-control-sm" name="attention" id="attention" placeholder="Attention">
+                </div>
+                <div class="form-group text-right">
+                    <button type="button" class="btn btn-secondary">Cancel</button>
+                    <input type="submit" class="btn btn-primary" name="submit" value="Print Envelope">
+                    <input type="submit" class="btn btn-primary" name="submit" value="Print Label">
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
