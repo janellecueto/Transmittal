@@ -7,8 +7,6 @@
     <link rel="stylesheet" href="../assets/css/bootstrap-reboot.css">
     <link rel="stylesheet" href="../assets/css/bootstrap.css">
     <link rel="stylesheet" href="../assets/css/bootstrap-grid.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay"
-          crossorigin="anonymous">
     <link rel="stylesheet" href="../assets/css/mainStyle.css">
     <title>Fax Transmittal Form</title>
     <style>
@@ -44,11 +42,11 @@
                 </div>
                 <div class="form-group row">
                     <div class="col-md-5">
-                        <input type="text" class="form-control form-control-sm" name="attention" placeholder="Attention" list="clientNames">
+                        <input type="text" class="form-control form-control-sm" id="attention" name="attention" placeholder="Attention" list="clientNames">
                         <datalist id="clientNames"></datalist>
-                        <input type="text" class="form-control form-control-sm" name="company" placeholder="Company">
-                        <input type="text" class="form-control form-control-sm" name="fax" placeholder="Fax Number" required>
-                        <input type="text" class="form-control form-control-sm" name="from" placeholder="From">
+                        <input type="text" class="form-control form-control-sm" id="company" name="company" placeholder="Company">
+                        <input type="text" class="form-control form-control-sm" id="fax" name="fax" placeholder="Fax Number" required>
+                        <input type="text" class="form-control form-control-sm" id="from" name="from" placeholder="From">
                     </div>
                     <div class="col-md-7">
                         <div class="form-group row">
@@ -87,27 +85,27 @@
                         <tbody>
                         <tr>
                             <th scope="row">COPY TO</th>
-                            <td><input type="text" class="form-control form-control-sm extraComp" name="extraComp[]" data-list="extraNames1"></td>
+                            <td><input type="text" class="form-control form-control-sm extraComp" name="extraComp[]" data-list="extraNames1" data-fax="extraFax1"></td>
                             <td>
                                 <input type="text" class="form-control form-control-sm" name="extraName[]" list="extraNames1">
                                 <datalist id="extraNames1"></datalist>
                             </td>
-                            <td><input type="text" class="form-control form-control-sm" name="extraFax[]"></td>
+                            <td><input type="text" class="form-control form-control-sm" id="extraFax1" name="extraFax[]"></td>
                         </tr>
                         <tr>
                             <th scope="row"></th>
-                            <td><input type="text" class="form-control form-control-sm extraComp" name="extraComp[]" data-list="extraNames2"></td>
+                            <td><input type="text" class="form-control form-control-sm extraComp" name="extraComp[]" data-list="extraNames2" data-fax="extraFax2"></td>
                             <td>
                                 <input type="text" class="form-control form-control-sm" name="extraName[]" list="extraNames2">
-                                <datalist id="extraNames1"></datalist>
+                                <datalist id="extraNames2"></datalist>
                             </td>
-                            <td><input type="text" class="form-control form-control-sm" name="extraFax[]"></td>
+                            <td><input type="text" class="form-control form-control-sm" id="extraFax2" name="extraFax[]"></td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
                 <div class="form-group row">
-                    <button type="button" class="btn btn-secondary" style="margin-left: auto;">Cancel</button>
+                    <button type="button" class="btn btn-secondary" style="margin-left: auto;" onclick="location.href='../';">Cancel</button>
                     <input type="submit" class="btn btn-primary" style="margin-left: 5px;" value="Print">
                     <button type="button" class="btn btn-primary" style="margin-left: 5px;" disabled>Send Fax</button>
                     
@@ -120,8 +118,24 @@
 <script src="../assets/js/jquery.mask.js"></script>
 <script src="../assets/js/bootstrap.bundle.js"></script>
 <script src="../assets/js/bootstrap.js"></script>
+
 <script src="../assets/js/main.js"></script>
 <script>
+    $("#jobNumber").change(function(e){
+        e.preventDefault();
+        $("#clientNames").empty();
+        faxFill($(this).val(), "jobNumber");
+    });
+    $("#clientCode").change(function(e){
+        e.preventDefault();
+        $("#clientNames").empty();
+        faxFill($(this).val(), "clientCode");
+    })
+    $(".extraComp").change(function(e){
+        e.preventDefault();
+        $("#"+$(this).attr("data-list")).empty();
+        copyToFill($(this), $(this).val());
+    });
 
 </script>
 </body>

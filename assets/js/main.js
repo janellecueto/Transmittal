@@ -256,7 +256,10 @@ function copyToFill(input, value, url="../assets/php/fillAddress.php"){
             let data = JSON.parse(result);
             input.val(data["company"]);
             let clnames = $("#"+input.attr("data-list"));
-            alert(input.attr("data-list"));
+            // alert(input.attr("data-list"));
+            if(input.attr("data-fax")){
+                $("#"+input.attr("data-fax")).val(data["fax"]);
+            }
             data["names"].forEach(function(item){
                 var opt = $("<option>");
                 opt.val(item).text(item);
@@ -304,6 +307,8 @@ function faxFill(value, flag, url="../assets/php/fillAddress.php"){
         }
     });
 }
+
+
 
 
 /***********************************************************************************************************************
