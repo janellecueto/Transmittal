@@ -44,3 +44,9 @@ thead.sticky-top{
     width: 50%;
     margin: auto;
 }
+input.num, input.money{text-align: right;}
+.plotting-iframe{
+    border: none;
+    width: 100%;
+    height: 350px;
+}
