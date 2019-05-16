@@ -7,24 +7,17 @@
     <link rel="stylesheet" href="../assets/css/bootstrap-reboot.css">
     <link rel="stylesheet" href="../assets/css/bootstrap.css">
     <link rel="stylesheet" href="../assets/css/bootstrap-grid.css">
-<!--    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay"-->
-<!--          crossorigin="anonymous">-->
     <link rel="stylesheet" href="../assets/css/mainStyle.css">
     <title>Bill Plot Form</title>
     <style>
-        input.num, input.money{text-align: right;}
-        .plotting-iframe{
-            border: none;
-            width: 100%;
-            height: 350px;
-        }
+
     </style>
 </head>
 <body>
     <div class="container">
         <h2 class="top-sm">Plotting Set Biller Form</h2>
         <div class="form-wrapper">
-            <form>
+            <form action="print.php" method="post">
                 <div class="form-group row">
                     <div class="col-md-6">
                         <div class="row">
@@ -123,17 +116,17 @@
                                 </select>
                             </td>
                             <td class="text-center">
-                                <input type="checkbox" class="form-check-input" name="colored[]" id="color1">
+                                <input type="checkbox" class="form-check-input" name="colored[]" id="color1" value="0">
                             </td>
-                            <td><input type="text" name="costs[]" class="form-control form-control-sm money cost-money" placeholder="$0.00" disabled></td>
-                            <td><input type="text" name="lineTotals[]" class="form-control form-control-sm money total-money" placeholder="$0.00" disabled></td>
+                            <td><input type="text" name="costs[]" class="form-control form-control-sm money cost-money" placeholder="$0.00" readonly></td>
+                            <td><input type="text" name="lineTotals[]" class="form-control form-control-sm money total-money" placeholder="$0.00" readonly></td>
                         </tr>
                         </tbody>
                         <tfoot>
                         <tr>
                             <td><button type="button" id="addRow" class="btn btn-primary btn-sm" style="margin: auto;">Add Row</button></td>
                             <th colspan="5" scope="row" class="text-right">Bill Total</th>
-                            <td><input type="text" name="total" id="total" class="form-control form-control-sm money" placeholder="$0.00" disabled></td>
+                            <td><input type="text" name="total" id="total" class="form-control form-control-sm money" placeholder="$0.00" readonly></td>
                         </tr>
                         </tfoot>
                     </table>
@@ -195,53 +188,24 @@
 
     $("input.num").mask("#");
 
-    function updateLineTotal(){
-        let parent = $(this).closest("tr");     //find parent row
 
-        let cost = parent.find(".cost-money");      //cost / sheet element
-        let lineTotal = parent.find(".total-money");    //line total element
-
-        let sets = parent.find("td:first-child").find("input").val();       //value of Number of Sets input element
-        let sheets = parent.find("td:nth-child(2)").find("input").val();    //value of Sheets per Set input element
-
-        let setsBySheets = (sets && sheets) ? parseInt(sets) * parseInt(sheets) : 0;        //multiply both vals if given else 0
-
-        let sheetSize = parent.find("td:nth-child(3)").find("select").val();
-        // console.log(parent.find("td:nth-child(3)").find("select").val());
-
-        //NOTE: media type is always paper :/ we may remove this column in the future which means the following index
-        //      would need to be changed
-        let price = 0;
-        // console.log(parent.find("td:nth-child(5)").find("input").is(":checked"));
-        if(parent.find("td:nth-child(5)").find("input").is(":checked")) {
-            price = sheetSizes[sheetSize][1];
-        } else {
-            price = sheetSizes[sheetSize][2];
-        }
-        cost.val("$" + price.toFixed(2));       //always use 2 decimals for dollar values
-        // console.log(setsBySheets);
-        lineTotal.val("$" + (setsBySheets * price).toFixed(2));
-        updateBillTotal();
-    }
 
     $("#sets1").change(updateLineTotal);
     $("#sheets1").change(updateLineTotal);
     $(".select-size").change(updateLineTotal);
     $("#color1").change(updateLineTotal);
 
-    function updateBillTotal(){
-        let billTotal = $("#total");
-        let running = 0;
-        $("#rowWrapper > tr").each(function(){
-            var lineTotal = parseFloat($(this).find(".total-money").val().substring(1));
-            running += lineTotal;
-            // console.log(lineTotal);
-        });
-        // console.log(running);
-        billTotal.val("$"+running.toFixed(2));
-    }
+    $("#jobNumber").change(function(e){
+        e.preventDefault();
+        $("#clientNames").empty();
+        addrFill($(this).val(), "jobNumber");
+    });
+    $("#clientCode").change(function(e){
+        e.preventDefault();
+        $("#clientNames").empty();
+        addrFill($(this).val(), "clientCode");
+    });
 
-    //this function grabs the plotting prices and inserts them into sheetSizes
 
     
 </script>
