@@ -33,7 +33,7 @@
                         </div>
                         <div class="row">
                             <label for="jobNumber" class="col-sm-3">Job Number</label>
-                            <div class="col-sm-9"><input type="text" id="jobNumber" name="jobNumber" class="form-control form-control-sm"></div>
+                            <div class="col-sm-9"><input type="text" id="jobNumber" name="jobNumber" class="form-control form-control-sm" required></div>
                         </div>
                         <div class="row">
                             <label for="clientCode" class="col-sm-3">Client Code</label>
@@ -62,11 +62,11 @@
                         </div>
                         <div class="row">
                             <label for="company" class="col-sm-3">Company</label>
-                            <div class="col-sm-9"><input type="text" id="company" name="company" class="form-control form-control-sm"></div>
+                            <div class="col-sm-9"><input type="text" id="company" name="company" class="form-control form-control-sm" required></div>
                         </div>
                         <div class="row">
                             <label for="addr1" class="col-sm-3">Address 1</label>
-                            <div class="col-sm-9"><input type="text" id="addr1" name="addr1" class="form-control form-control-sm"></div>
+                            <div class="col-sm-9"><input type="text" id="addr1" name="addr1" class="form-control form-control-sm" required></div>
                         </div>
                         <div class="row">
                             <label for="addr2" class="col-sm-3">Address 2</label>
@@ -74,13 +74,13 @@
                         </div>
                         <div class="row">
                             <label for="city" class="col-sm-3">City</label>
-                            <div class="col-sm-9"><input type="text" id="city" name="city" class="form-control form-control-sm"></div>
+                            <div class="col-sm-9"><input type="text" id="city" name="city" class="form-control form-control-sm" required></div>
                         </div>
                         <div class="row">
                             <label for="state" class="col-sm-3">State</label>
-                            <div class="col-3"><input type="text" id="state" name="state" class="form-control form-control-sm"></div>
+                            <div class="col-3"><input type="text" id="state" name="state" class="form-control form-control-sm" required></div>
                             <label for="zip" class="col-3">Zip</label>
-                            <div class="col-3"><input type="text" id="zip" name="zip" class="form-control form-control-sm"></div>
+                            <div class="col-3"><input type="text" id="zip" name="zip" class="form-control form-control-sm" required></div>
                         </div>
                     </div>
                 </div>
@@ -102,10 +102,10 @@
                         </thead>
                         <tbody id="rowWrapper">
                         <tr>
-                            <td><input type="text" name="numSets[]" class="form-control form-control-sm num"></td>
-                            <td><input type="text" name="numSheets[]" class="form-control form-control-sm num"></td>
+                            <td><input type="text" name="numSets[]" class="form-control form-control-sm num" id="sets1"></td>
+                            <td><input type="text" name="numSheets[]" class="form-control form-control-sm num" id="sheets1"></td>
                             <td>
-                                <select name="sheetSizes[]" class="form-control form-control-sm">
+                                <select name="sheetSizes[]" class="form-control form-control-sm select-size">
                                     <option value="ss1">24 x 36</option>
                                     <option value="ss2">30 x 42</option>
                                     <option value="ss3">36 x 48</option>
@@ -123,7 +123,7 @@
                                 </select>
                             </td>
                             <td class="text-center">
-                                <input type="checkbox" class="form-check-input" name="colored[]">
+                                <input type="checkbox" class="form-check-input" name="colored[]" id="color1">
                             </td>
                             <td><input type="text" name="costs[]" class="form-control form-control-sm money cost-money" placeholder="$0.00" disabled></td>
                             <td><input type="text" name="lineTotals[]" class="form-control form-control-sm money total-money" placeholder="$0.00" disabled></td>
@@ -180,108 +180,69 @@
 <script src="../assets/js/main.js"></script>
 <script>
     let sheetSizes = {
-        ss1: "24 x 36",
-        ss2: "30 x 42",
-        ss3: "36 x 48",
-        ss4: "8.5 x 11",
-        ss5: "11 x 17",
-        ss6: "12 x 18",
-        ss7: "15 x 21",
-        ss8: "18 x 24",
-        ss9: "22 x 34"
+        ss1: ["24 x 36"],
+        ss2: ["30 x 42"],
+        ss3: ["36 x 48"],
+        ss4: ["8.5 x 11"],
+        ss5: ["11 x 17"],
+        ss6: ["12 x 18"],
+        ss7: ["15 x 21"],
+        ss8: ["18 x 24"],
+        ss9: ["22 x 34"]
     };
+
+    $(document).ready(setPrices);
 
     $("input.num").mask("#");
 
-    $("#addRow").click(function(){
-        let wrapper = $("#rowWrapper");
-        let newRow = $("<tr>");
+    function updateLineTotal(){
+        let parent = $(this).closest("tr");     //find parent row
 
-        let setsTd = $("<td>");
-        let setsIn = $("<input>");
-        setsIn.addClass("form-control form-control-sm num");
-        setsIn.attr({
-            type: "text",
-            name: "numSets[]"
-        });
-        setsIn.mask("#");
-        setsTd.append(setsIn);
-        newRow.append(setsTd);
+        let cost = parent.find(".cost-money");      //cost / sheet element
+        let lineTotal = parent.find(".total-money");    //line total element
 
-        let sheetsTd = $("<td>");
-        let sheetsIn = $("<input>");
-        sheetsIn.addClass("form-control form-control-sm num");
-        sheetsIn.attr({
-            type: "text",
-            name: "numSheets[]"
-        });
-        sheetsIn.mask("#");
-        sheetsTd.append(sheetsIn);
-        newRow.append(sheetsTd);
+        let sets = parent.find("td:first-child").find("input").val();       //value of Number of Sets input element
+        let sheets = parent.find("td:nth-child(2)").find("input").val();    //value of Sheets per Set input element
 
-        let sizeTd = $("<td>");
-        let sizeIn = $("<select>");
-        sizeIn.addClass("form-control form-control-sm");
-        sizeIn.attr("name", "sheetSizes[]");
-        for (var key in sheetSizes){
-            sizeIn.append("<option value=\""+key+"\">"+sheetSizes[key]+"</option>");
+        let setsBySheets = (sets && sheets) ? parseInt(sets) * parseInt(sheets) : 0;        //multiply both vals if given else 0
+
+        let sheetSize = parent.find("td:nth-child(3)").find("select").val();
+        // console.log(parent.find("td:nth-child(3)").find("select").val());
+
+        //NOTE: media type is always paper :/ we may remove this column in the future which means the following index
+        //      would need to be changed
+        let price = 0;
+        // console.log(parent.find("td:nth-child(5)").find("input").is(":checked"));
+        if(parent.find("td:nth-child(5)").find("input").is(":checked")) {
+            price = sheetSizes[sheetSize][1];
+        } else {
+            price = sheetSizes[sheetSize][2];
         }
-        sizeTd.append(sizeIn);
-        newRow.append(sizeTd);
-
-        let mediaTd = $("<td>");
-        let mediaIn = $("<select>");
-        mediaIn.addClass("form-control form-control-sm");
-        mediaIn.attr("name", "mediaType[]");
-        mediaIn.append("<option value=\"paper\">Paper</option>");
-        mediaTd.append(mediaIn);
-        newRow.append(mediaTd);
-
-        let colorTd = $("<td>");
-        colorTd.addClass("text-center");
-        let colorIn = $("<input>");
-        colorIn.addClass("form-check-input");
-        colorIn.attr({
-            type: "checkbox",
-            name: "colored[]"
-        });
-        colorTd.append(colorIn);
-        newRow.append(colorTd);
-
-        let costTd = $("<td>");
-        let costIn = $("<input>");
-        costIn.addClass("form-control form-control-sm money cost-money");
-        costIn.attr({
-            type: "text",
-            name: "costs[]",
-            placeholder: "$0.00",
-            disabled: true
-        });
-        costTd.append(costIn);
-        newRow.append(costTd);
-
-        let lineTd = $("<td>");
-        let lineIn = $("<input>");
-        lineIn.addClass("form-control form-control-sm money total-money");
-        lineIn.attr({
-            type: "text",
-            name: "lineTotals[]",
-            placeholder: "$0.00",
-            disabled: true
-        });
-        lineTd.append(lineIn);
-        newRow.append(lineTd);
-
-        wrapper.append(newRow);
-
-    });
-
-    function updatePrices(){
-        let cost = $.closest("td").find(".cost-money");
-        let lineTotal = $.closest("td").find(".total-money");
-        let total = $("#total");
-
+        cost.val("$" + price.toFixed(2));       //always use 2 decimals for dollar values
+        // console.log(setsBySheets);
+        lineTotal.val("$" + (setsBySheets * price).toFixed(2));
+        updateBillTotal();
     }
+
+    $("#sets1").change(updateLineTotal);
+    $("#sheets1").change(updateLineTotal);
+    $(".select-size").change(updateLineTotal);
+    $("#color1").change(updateLineTotal);
+
+    function updateBillTotal(){
+        let billTotal = $("#total");
+        let running = 0;
+        $("#rowWrapper > tr").each(function(){
+            var lineTotal = parseFloat($(this).find(".total-money").val().substring(1));
+            running += lineTotal;
+            // console.log(lineTotal);
+        });
+        // console.log(running);
+        billTotal.val("$"+running.toFixed(2));
+    }
+
+    //this function grabs the plotting prices and inserts them into sheetSizes
+
     
 </script>
 </body>

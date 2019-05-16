@@ -231,60 +231,7 @@ if($conn->errno){
     $("#dupl").mask("#0"); //limit to 99 duplicates :)
     $(".num").mask("#");
 
-    $("#addNew").click(function(){
-        let $addWrapper = $('#addWrapper');
-        let newRow = $("<div>");
-        newRow.addClass("row");
 
-        let copiesDiv = $("<div>");
-        copiesDiv.addClass("col-sm-2");
-        let copiesInput = $("<input>");
-        copiesInput.addClass("form-control form-control-sm num");
-        copiesInput.attr({
-            type: "text",
-            name: "copies[]",
-            placeholder: "Copies"
-        });
-        copiesDiv.append(copiesInput);
-        newRow.append(copiesDiv);
-
-        let datesDiv = $("<div>");
-        datesDiv.addClass("col-sm-2");
-        let datesInput = $("<input>");
-        datesInput.addClass("form-control form-control-sm");
-        datesInput.attr({
-            type: "date",
-            name: "dates[]",
-        });
-        datesDiv.append(datesInput);
-        newRow.append(datesDiv);
-
-        let numbersDiv = $("<div>");
-        numbersDiv.addClass("col-sm-2");
-        let numbersInput = $("<input>");
-        numbersInput.addClass("form-control form-control-sm num");
-        numbersInput.attr({
-            type: "text",
-            name: "numbers[]",
-            placeholder: "Number"
-        });
-        numbersDiv.append(numbersInput);
-        newRow.append(numbersDiv);
-
-        let descriptDiv = $("<div>");
-        descriptDiv.addClass("col-sm-6");
-        let descInput = $("<input>");
-        descInput.addClass("form-control form-control-sm");
-        descInput.attr({
-            type: "text",
-            name: "descriptions[]",
-            placeholder: "Description"
-        });
-        descriptDiv.append(descInput);
-        newRow.append(descriptDiv);
-
-        $addWrapper.append(newRow);
-    });
 
 
     $("#jobNumber").change(function(e){
