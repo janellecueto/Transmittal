@@ -25,26 +25,30 @@ $type = 0;
 if(array_key_exists('type', $_POST)) $type = intval($_POST['type']);
 if(array_key_exists('type', $_GET)) $type = intval($_GET['type']);
 
-$tableName = $tableNameOld = "";
+$tableName = $tableNameOld = $nextLocation = "";
 $firstCol = "Serialno";
 
 switch($type){
     case 1:
         $tableName = $transTbl;
         $tableNameOld = $transTblOld;
+        $nextLocation = "transmittal";
         break;
     case 2:
         $tableName = $faxTbl;
         $tableNameOld = $faxTblOld;
+        $nextLocation = "fax";
         break;
     case 3:
         $tableName = $pbillTbl;
         $tableNameOld = $pbillTblOld;
         $firstCol = "InvoiceNo";
+        $nextLocation = "billplot";
         break;
     default:
         $tableName = $transTbl;
         $tableNameOld = $transTblOld;
+        $nextLocation = "transmittal";
         $firstCol = "Serialno";
 }
 
@@ -107,6 +111,12 @@ $result = $conn->query($mainQuery);
 $fields = $result->fetch_fields();
 
 $conn->close();
+if(!$q){    //if we're only retrieving the last form, grab the serial number
+    $row = $result->fetch_row();
+    $id = $row[0];
+    header("Location: ../../$nextLocation/index.php?id=$id");
+    exit;
+}
 
 ?>
 <!DOCTYPE html>
@@ -254,6 +264,7 @@ END;
 <script>
     var selected;
     var type = '<?php echo $type; ?>';
+    var nextLocation = '<?php echo $nextLocation; ?>';
 
     $(".clickable").click(function(){
         if(selected){
@@ -264,13 +275,7 @@ END;
     });
 
     $("#okBtn").click(function(){
-        if(type === '1'){
-            location.href = "../../transmittal/index.php?id=" + $('.clicked').attr("data-id");
-        } else if(type === '2'){
-
-        } else{
-
-        }
+        window.location.href = "../../"+nextLocation+"/index.php?id=" + $('.clicked').attr("data-id");
     });
 
 

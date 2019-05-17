@@ -1,6 +1,7 @@
 <?php
 include("../assets/php/info.php");
 
+//If an id is passed in, we are pre-filling out this form
 $id = 0;
 if(array_key_exists('id', $_GET)) $id = intval($_GET['id']);
 
@@ -10,8 +11,20 @@ if($conn->errno){
     exit();
 }
 
+$row = [];
+//there should be a row corresponding to the id, either in trans or trans91_18
+if($id) {
+    $query = "SELECT * FROM tc.trans WHERE Serialno = $id";
+    $result = $conn->query($query);
+    $row = $result->fetch_assoc();
 
-
+    foreach($row as $key => $value){
+        if($value == null){
+            $row[$key] = "";        //replace nulls with empty strings to pass to javascript
+        }
+    }
+}
+$conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -22,8 +35,6 @@ if($conn->errno){
     <link rel="stylesheet" href="../assets/css/bootstrap-reboot.css">
     <link rel="stylesheet" href="../assets/css/bootstrap.css">
     <link rel="stylesheet" href="../assets/css/bootstrap-grid.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay"
-          crossorigin="anonymous">
     <link rel="stylesheet" href="../assets/css/mainStyle.css">
     <title>Transmittal Form</title>
     <style>
@@ -64,7 +75,7 @@ if($conn->errno){
                     <div class="col-2"><input type="text" class="form-control form-control-sm" name="state" id="state" placeholder="State"></div>
                     <div class="col-3"><input type="text" class="form-control form-control-sm" name="zip" id="zip" placeholder="Zip"></div>
                 </div>
-                <input type="text" class="form-control form-control-sm" name="attention" placeholder="Attention" list="clientNames">
+                <input type="text" class="form-control form-control-sm" id="attention" name="attention" placeholder="Attention" list="clientNames">
                 <datalist id="clientNames"></datalist>
             </div>
             <div class="col-md-6">
@@ -132,13 +143,13 @@ if($conn->errno){
             <div class="form-check form-check-inline">
                 <input type="checkbox" class="form-check-input" name="items[]" id="othercheck" value="Other">
                 <label for="othercheck" class="form-check-label" style="margin-right: 5px;">Other:</label>
-                <input type="text" class="form-control form-control-sm" id="othertext" placeholder="(Please specify)">
+                <input type="text" class="form-control form-control-sm" id="othertext" name="othertext" placeholder="(Please specify)">
             </div>
         </div>
         <div class="form-group mid" id="addWrapper" style="margin-bottom: 1rem;">
             <div class="row">
                 <div class="col-sm-2"><input type="text" class="form-control form-control-sm num" name="copies[]" placeholder="Copies"></div>
-                <div class="col-sm-2"><input type="date" class="form-control form-control-sm" name="dates[]"></div>
+                <div class="col-sm-2"><input type="date" class="form-control form-control-sm auto-date" name="dates[]"></div>
                 <div class="col-sm-2"><input type="text" class="form-control form-control-sm num" name="numbers[]" placeholder="Number"></div>
                 <div class="col-sm-6"><input type="text" class="form-control form-control-sm" name="descriptions[]" placeholder="Description"></div>
             </div>
@@ -207,7 +218,7 @@ if($conn->errno){
                 <div class="form-group row">
                     <label for="signed" class="col-4 text-right">Signed</label>
                     <div class="col-8">
-                        <input type="text" id="signed" class="form-control form-control-sm" list="deiEmps" required>
+                        <input type="text" id="signed" name="signed" class="form-control form-control-sm" list="deiEmps" required>
                         <datalist id="deiEmps"></datalist>
                     </div>
                 </div>
@@ -230,26 +241,82 @@ if($conn->errno){
 
     $("#dupl").mask("#0"); //limit to 99 duplicates :)
     $(".num").mask("#");
+    $(".auto-date").val(fillDate());
+
+    //set variables for id and row, if there's an id, there's a row and we have to pre-fill the form with info in row
+    let row = [];
+    let id = 0;
+
+    <?php
+    if($id) {
+        echo "id = $id;";
+        echo "row = ".json_encode($row).";";
+    }
+    ?>
+
+    if(id){
+        $("#jobNumber").val(row["Jn"]);     //NOTE: DB table column names are slightly different than common naming
+        $("#clientCode").val(row["Code"]);  //      conventions used throughout the program. Make sure to match the db table columns
+        $("#clientNumber").val(row["Client num"]);
+        $("#company").val(row["Company"]);
+        $("#addr1").val(row["Addr1"]);
+        $("#addr2").val(row["Addr2"]);
+        $("#city").val(row["City"]);
+        $("#state").val(row["State"]);
+        $("#zip").val(row["Zip"]);
+        $("#attention").val(row["Attention"]);
+        $("#project").val(row["Project"]);
+        if(row["Under separate cover"]) $("#sepr").attr("checked", true);
+        $("#via").val(row["Via"]);
+        if(row["Shop drawings"]) $("#sdcheck").attr("checked", true);
+        if(row["Prints"]) $("#pcheck").attr("checked", true);
+        if(row["Plans"]) $("#plcheck").attr("checked", true);
+        if(row["Specifications"]) $("#speccheck").attr("checked", true);
+        if(row["Samples"]) $("#scheck").attr("checked", true);
+        if(row["Copy of letter"]) $("#clcheck").attr("checked", true);
+        if(row["Change order"]) $("#cocheck").attr("checked", true);
+        if(row["Other"]) {
+            $("#othercheck").attr("checked", true);
+            $("#othertext").val(row["What other"]);
+        }
+        document.getElementsByName("extraComp[]")[0].value = row["Copy to1"];
+        document.getElementsByName("extraComp[]")[1].value = row["Copy to2"];
+        document.getElementsByName("extraName[]")[0].value = row["Copy_1_who"];
+        document.getElementsByName("extraName[]")[1].value = row["Copy_1_who"];
+        $("#signed").val(row["Signed"]);
+
+        for(var i = 1; i < 9; i++){
+            if(!row["C"+i]) break;
+            document.getElementsByName("copies[]")[i-1].value = row["C"+i];
+            document.getElementsByName("dates[]")[i-1].value = convertDate(row["D"+i]);
+            document.getElementsByName("numbers[]")[i-1].value = parseInt(row["Nn"+i]);
+            console.log(row["Nn1"]);
+            document.getElementsByName("descriptions[]")[i-1].value = row["Des"+i];
+            if(row["C"+(i+1)]){
+                addNew();
+            }
+        }
+    }
 
 
 
-
-    $("#jobNumber").change(function(e){
+    $("#jobNumber").change(function(e){         //fill address inputs when job number changes
         e.preventDefault();
         $("#clientCode").val("");
-        $("#clientNames").empty();
+        $("#clientNames").empty();              //empty out the datalist of client names before inserting new names
         addrFill($(this).val(), "jobNumber");
     });
-    $("#clientCode").change(function(e){
+    $("#clientCode").change(function(e){        //fill/change address inputs when client code changes
         e.preventDefault();
         $("#clientNames").empty();
         addrFill($(this).val(), "clientCode");
     });
-    $(".extraComp").change(function(e){
+    $(".extraComp").change(function(e){         //this fills out just the company name and the client list for the Copy To companies
         e.preventDefault();
         $("#"+$(this).attr("data-list")).empty();
         copyToFill($(this), $(this).val());
     });
+
 
 
 

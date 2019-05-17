@@ -39,7 +39,8 @@ function setPrices(){
 /**
  * This onClick function adds a new item description row in transmittal/index
  */
-$("#addNew").click(function(){
+
+function addNew(){
     let $addWrapper = $('#addWrapper');
     let newRow = $("<div>");
     newRow.addClass("row");
@@ -64,6 +65,7 @@ $("#addNew").click(function(){
         type: "date",
         name: "dates[]",
     });
+    datesInput.val(fillDate());
     datesDiv.append(datesInput);
     newRow.append(datesDiv);
 
@@ -92,7 +94,9 @@ $("#addNew").click(function(){
     newRow.append(descriptDiv);
 
     $addWrapper.append(newRow);
-});
+}
+
+$("#addNew").click(addNew);     //attach addNew function on #addNew button click
 
 /**
  * This onClick function adds a new bill plot row in billplot/index
@@ -361,3 +365,29 @@ function updateBillTotal(){
     billTotal.val("$"+running.toFixed(2));
 }
 
+/***********************************************************************************************************************
+ * Functions below are global helper functions
+ */
+function fillDate(){
+    let d = new Date();
+    let day = d.getDate();
+    console.log(day);
+    console.log(d);
+    let month = d.getMonth()+1;
+    let year = d.getFullYear();
+    if(day<10) day = "0"+day;
+    if(month<10) month = "0"+month;
+
+    return year+"-"+month+"-"+day;
+}
+
+//This function converts date from format m/d/yyyy to yyyy-mm-dd
+function convertDate(dateStr){
+    let arr = dateStr.split("/");
+    let ret = arr[2];
+    if(arr[0]<10) ret += "-0"+arr[0];
+    else ret += "-"+arr[0];
+    if(arr[1]<10) ret += "-0"+arr[1];
+    else ret += "-"+arr[1];
+    return ret;
+}
