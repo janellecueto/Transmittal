@@ -2,7 +2,7 @@
 /*
  *  Prints to label printer
  * */
-$q = $_GET['q']; //supposedly an array from printLbl
+$q = $_GET['q']; //array of info 
 
 $qarr = json_decode($q, true);
 

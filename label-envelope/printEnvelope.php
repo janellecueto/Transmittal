@@ -1,6 +1,9 @@
 <?php
+/**
+ * Prints to reception printer using PCL for envelope formatting 
+ */
 
-$q = $_GET['q']; //supposedly an array from printLbl
+$q = $_GET['q']; //array of info
 
 $qarr = json_decode($q, true);
 

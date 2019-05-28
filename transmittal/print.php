@@ -10,7 +10,7 @@
 
 require_once('../../tcpdf6/tcpdf.php');
 require_once('../../tcpdf6/examples/lang/eng.php');
-include("../info.php");
+require_once("../assets/php/info.php");
 include("../assets/php/current.php");
 
 $debug = true;  //flag for debugging :)
@@ -51,13 +51,14 @@ $copies = $_POST['copies'];
 $dates = $_POST['dates'];
 $numbers = $_POST['numbers'];
 $descriptions = $_POST['descriptions'];
+
 $extraComp = $_POST['extraComp'];
 $extraName = $_POST['extraName'];
-$trOnly = (array_key_exists("trOnly", $_POST) ? $_POST['trOnly'] : 0);
-$copyLbl = (array_key_exists("copyLbl", $_POST) ? $_POST['copyLbl'] : 0);
-$copyEnv = (array_key_exists("copyEnv", $_POST) ? $_POST['copyEnv'] : 0);
+// $trOnly = (array_key_exists("trOnly", $_POST) ? $_POST['trOnly'] : 0);
+// $copyLbl = (array_key_exists("copyLbl", $_POST) ? $_POST['copyLbl'] : 0);
+// $copyEnv = (array_key_exists("copyEnv", $_POST) ? $_POST['copyEnv'] : 0);
 
-
+$save = intval($_POST['save']);
 
 //echo "hello!<br>";
 //echo "job number: $jobNumber<br>";
@@ -102,78 +103,80 @@ $copyEnv = (array_key_exists("copyEnv", $_POST) ? $_POST['copyEnv'] : 0);
 /***********************************************************************************************************************
  * Write to DB
  */
-
-$mainQuery = "INSERT INTO tc.$transTbl (`Date`, `Code`, Company, Addr1, Addr2, Project, City, State, Zip, Jn, ";
-$values = "VALUES( '".$date->format("Y-m-d")."', '$clientCode', '$company', '$addr1', '$addr2', '$project', '$city', '$state', '$zip', '$jobNumber', ";
-
-$mainQuery .= "`Client num`, Attention, `$rBtn`, Via, ";
-$values .= "'$clientNumber', '$attention', 1, '$via', ";
-
-foreach($items as $v){
-    if(strpos($v, "Other") !== false){
-        $mainQuery .= "Other, `What other`, ";
-        $values .= "1, '".$_POST['otherText']."', ";
-    }
-    else{
-        $mainQuery .= "`$v`, ";
-        $values .= "1, ";
-    }
-}
-
-//$copies, $numbers, $dates, and $descriptions will all be the same length. go through copies and increment i to
-//get the correct index for the other three.
-$i = 1;     //NOTE: in the db table, this sub-table starts with "C1" "D1" "Nn1" "Desc1" through 8
-foreach($copies as $c){
-    $mainQuery .= "C$i, D$i, Nn$i, Des$i, ";
-    //NOTE: copies and numbers are numeric, dates and descriptions are strings
-    $values .= "$c, '".$dates[$i-1]."', ".$numbers[$i-1].", '".str_replace("'", '"', $descriptions[$i-1])."', ";
-    $i++;
-}
-
-if($remarks){
-    $mainQuery .= "Remarks, ";
-    $values .= "'".str_replace("'", '"', $remarks)."', ";
-}
-if($extraComp[0]){
-    $mainQuery .= "`Copy to1`, ";
-    $values .= "'$extraComp[0]', ";
-    if($extraName[0]){
-        $mainQuery .= "`Copy_1_who`, ";
-        $values .= "'$extraName[0]', ";
-    }
-}
-if($extraComp[1]){
-    $mainQuery .= "`Copy to2`, ";
-    $values .= "'$extraComp[1]', ";
-    if($extraName[1]){
-        $mainQuery .= "`Copy_2_who`, ";
-        $values .= "'$extraName[1]', ";
-    }
-}
-
-$mainQuery .= "Signed) ";
-$values .= "'$signed')";
-
-$mainQuery .= $values;
-
-// echo "hello!<br>";
-// echo "$mainQuery";
-
 $conn = new mysqli($host, $user, $password, $defaultTbl);
 if($conn->connect_errno){
     echo "<br>Error: ".$conn->error;
     exit();
 }
-if(!$debug) {
-    if (!$conn->query($mainQuery)) {
-        echo "Error: " . $conn->error . "<br>$mainQuery<br>Form data not saved to db.";
-        exit;
+
+if($save){
+    $mainQuery = "INSERT INTO tc.$transTbl (`Date`, `Code`, Company, Addr1, Addr2, Project, City, State, Zip, Jn, ";
+    $values = "VALUES( '".$date->format("Y-m-d")."', '$clientCode', '$company', '$addr1', '$addr2', '$project', '$city', '$state', '$zip', '$jobNumber', ";
+
+    $mainQuery .= "`Client num`, Attention, `$rBtn`, Via, ";
+    $values .= "'$clientNumber', '$attention', 1, '$via', ";
+
+    foreach($items as $v){
+        if(strpos($v, "Other") !== false){
+            $mainQuery .= "Other, `What other`, ";
+            $values .= "1, '".$_POST['otherText']."', ";
+        }
+        else{
+            $mainQuery .= "`$v`, ";
+            $values .= "1, ";
+        }
     }
-}
 
-//$serialNo = findCurrent($conn, $transTbl);
+    //$copies, $numbers, $dates, and $descriptions will all be the same length. go through copies and increment i to
+    //get the correct index for the other three.
+    $i = 1;     //NOTE: in the db table, this sub-table starts with "C1" "D1" "Nn1" "Desc1" through 8
+    foreach($copies as $c){
+        $mainQuery .= "C$i, D$i, Nn$i, Des$i, ";
+        //NOTE: copies and numbers are numeric, dates and descriptions are strings
+        $values .= "$c, '".$dates[$i-1]."', ".$numbers[$i-1].", '".str_replace("'", '"', $descriptions[$i-1])."', ";
+        $i++;
+    }
+
+    if($remarks){
+        $mainQuery .= "Remarks, ";
+        $values .= "'".str_replace("'", '"', $remarks)."', ";
+    }
+    if($extraComp[0]){
+        $mainQuery .= "`Copy to1`, ";
+        $values .= "'$extraComp[0]', ";
+        if($extraName[0]){
+            $mainQuery .= "`Copy_1_who`, ";
+            $values .= "'$extraName[0]', ";
+        }
+    }
+    if($extraComp[1]){
+        $mainQuery .= "`Copy to2`, ";
+        $values .= "'$extraComp[1]', ";
+        if($extraName[1]){
+            $mainQuery .= "`Copy_2_who`, ";
+            $values .= "'$extraName[1]', ";
+        }
+    }
+
+    $mainQuery .= "Signed) ";
+    $values .= "'$signed')";
+
+    $mainQuery .= $values;
+
+    // echo "hello!<br>";
+    // echo "$mainQuery";
+
+    // if(!$debug) {
+        if (!$conn->query($mainQuery)) {
+            echo "Error: " . $conn->error . "<br>$mainQuery<br>Form data not saved to db.";
+            exit;
+        }
+    // }
+
+}   //end if($save)
+
+// $serialNo = findCurrent($conn, $transTbl);   //it appears that we don't print this anymore? i forget (JC 05.28.2019)
 $conn->close();
-
 /***********************************************************************************************************************
  * TCPDF helper functions
  */
@@ -435,13 +438,27 @@ else {
         else if ($isAdmin) copy($localRoot, $printerPathA);
         else copy($localRoot, $printerPath);
     }
+    echo "$dupl transmittal form(s) sent to printer<br>";
 }
 
+$q = [];
+$q[] = $jobNumber;
+$q[] = $attention;
+$q[] = $company;
+$q[] = $addr1;
+if($addr2) $q[] = $addr2;
+$q[] = $city;
+$q[] = $state;
+$q[] = $zip;
+
+$_GET['q'] = json_encode($q);           //print envelope and print label use the same array structure and q as parameter
 if($printLblMain){
-    //TODO: add code to send to label print
+    include("printLabel.php");
+    echo "Address info sent to label printer<br>";
 }
 if($printEnvMain){
-    //TODO: add code to send to envelope print
+    include("printEnvelope.php");
+    echo "Address info sent to envelope printer<br>";
 }
 
 //TODO: for each in copyLbl and copyEnv, send to get labels/envelopes printed

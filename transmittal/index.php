@@ -50,7 +50,8 @@ $conn->close();
 <div class="container">
     <h2 class="top-sm">Transmittal Form</h2>
 <div class="form-wrapper">
-    <form action="print.php" method="post">
+    <!-- <form action="print.php" method="post"> -->
+    <form id="transmittalForm">
         <div class="form-group row">
             <div class="col-md-8">
                 <div class="row">
@@ -179,25 +180,25 @@ $conn->close();
                 <tbody>
                 <tr>
                     <th scope="row">COPY TO</th>
-                    <td style="width: 25%;"><input type="text" class="form-control form-control-sm extraComp" name="extraComp[]" data-list="extraNames1"></td>
+                    <td style="width: 25%;"><input type="text" class="form-control form-control-sm extraComp" name="extraComp[]" id="extraComp1" data-list="extraNames1"></td>
                     <td style="width: 25%;">
-                        <input type="text" class="form-control form-control-sm" name="extraName[]" list="extraNames1">
+                        <input type="text" class="form-control form-control-sm" name="extraName[]" list="extraNames1" id="extraName1">
                         <datalist id="extraNames1"></datalist>
                     </td>
-                    <td class="text-center"><input type="checkbox" class="form-check-input" name="trOnly[]" value="tr1"></td>
-                    <td class="text-center"><input type="checkbox" class="form-check-input" name="copyLbl[]" value="lbl1"></td>
-                    <td class="text-center"><input type="checkbox" class="form-check-input" name="copyEnv[]" value="env1"></td>
+                    <td class="text-center"><input type="checkbox" class="form-check-input" id="tr1"></td>
+                    <td class="text-center"><input type="checkbox" class="form-check-input" id="lbl1"></td>
+                    <td class="text-center"><input type="checkbox" class="form-check-input" id="env1"></td>
                 </tr>
                 <tr>
                     <th scope="row"></th>
-                    <td style="width: 25%;"><input type="text" class="form-control form-control-sm extraComp" name="extraComp[]" data-list="extraNames2"></td>
+                    <td style="width: 25%;"><input type="text" class="form-control form-control-sm extraComp" name="extraComp[]" id="extraComp2" data-list="extraNames2"></td>
                     <td style="width: 25%;">
-                        <input type="text" class="form-control form-control-sm" name="extraName[]" list="extraNames2">
+                        <input type="text" class="form-control form-control-sm" name="extraName[]" list="extraNames2" id="extraName2">
                         <datalist id="extraNames2"></datalist>
                     </td>
-                    <td class="text-center"><input type="checkbox" class="form-check-input" name="trOnly[]" value="tr2"></td>
-                    <td class="text-center"><input type="checkbox" class="form-check-input" name="copyLbl[]" value="lbl2"></td>
-                    <td class="text-center"><input type="checkbox" class="form-check-input" name="copyEnv[]" value="env2"></td>
+                    <td class="text-center"><input type="checkbox" class="form-check-input" id="tr2"></td>
+                    <td class="text-center"><input type="checkbox" class="form-check-input" id="lbl2"></td>
+                    <td class="text-center"><input type="checkbox" class="form-check-input" id="env2"></td>
                 </tr>
                 </tbody>
             </table>
@@ -231,8 +232,47 @@ $conn->close();
                 </div>
             </div>
         </div>
+        <input type="hidden" name="save" id="save" value="1"><!-- used for skipping save to db for copy tos -->
     </form>
 </div>
+</div>
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Sent to printer</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="successBody">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <a href="../" class="btn btn-primary">Exit to Transmittal Home</a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Error</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="errorBody">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <a href="../" class="btn btn-primary">Exit to Transmittal Home</a>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script src="../assets/js/jquery-3.3.1.js"></script>
@@ -301,7 +341,7 @@ $conn->close();
         }
     }
 
-
+    var extraComp1, extraComp2;     //these hold copyto client codes 
 
     $("#jobNumber").change(function(e){         //fill address inputs when job number changes
         e.preventDefault();
@@ -317,10 +357,93 @@ $conn->close();
     $(".extraComp").change(function(e){         //this fills out just the company name and the client list for the Copy To companies
         e.preventDefault();
         $("#"+$(this).attr("data-list")).empty();
+
+        if($(this).attr("id") == "extraComp1"){
+            extraComp1 = $(this).val();
+        } else {
+            extraComp2 = $(this).val();
+        }
+
         copyToFill($(this), $(this).val());
     });
 
+    $("#transmittalForm").submit(function(e){
+        e.preventDefault();
+        $.ajax({
+            type: "POST",
+            url: "print.php",
+            data: $(this).serialize(),
+            success: function(result){
+                if(result.includes("Error:")){
+                    $("#errorBody").html(result);
+                    $("#errorModal").modal("show");
+                }
+                else{
+                    console.log(result);
+                    $("#successBody").html(result);
+                    $("#successModal").modal("show");
+                }
+            },
+            error: function(result){
+                $("#errorBody").html(result);
+                $("#errorModal").show();
+            }
+        });
 
+        // if($("#extraComp1").val()){
+        //     //send to print.php with extraComp1 info
+        //     addrFill(extraComp1, "clientCode");
+        //     $("#attention").val($("#extraName1").val());
+        //     $("#save").val("0");    //override save to db
+
+        //     if($("lbl1").attr("checked")) $("#printLblMain").attr("checked",true);
+        //     else $("#printLblMain").attr("checked", false);
+        //     if($("env1").attr("checked")) $("#printEnvMain").attr("checked", true);
+        //     else $("#printEnvMain").attr("checked", false);
+
+        //     $("#extraComp1").val("");
+        //     $("#extraName1").val("");
+        //     sendTransmittal();
+        // }
+        // if($("#extraComp1").val()){
+        //     //send to print.php with extraComp2 info
+        //     addrFill(extraComp2, "clientCode");
+        //     $("#attention").val($("#extraName2").val());
+        //     $("#save").val("0");    //override save to db
+
+        //     if($("lbl2").attr("checked")) $("#printLblMain").attr("checked",true);
+        //     else $("#printLblMain").attr("checked", false);
+        //     if($("env2").attr("checked")) $("#printEnvMain").attr("checked", true);
+        //     else $("#printEnvMain").attr("checked", false);
+
+        //     $("#extraComp2").val("");
+        //     $("#extraName2").val("");
+        //     sendTransmittal();
+        // }
+
+    });
+
+    function sendTransmittal(){
+        $.ajax({
+            method: "POST",
+            url: "print.php",
+            data: $(this).serialize(),
+            success: function(result){
+                if(result.includes("Error:")){
+                    $("#errorBody").html(result);
+                    $("#errorModal").show();
+                }
+                else{
+                    $("#successBody").html(result);
+                    $("#successModal").show();
+                }
+            },
+            error: function(result){
+                $("#errorBody").html(result);
+                $("#errorModal").show();
+            }
+        });
+    }
 
 
 

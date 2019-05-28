@@ -383,6 +383,9 @@ function fillDate(){
 
 //This function converts date from format m/d/yyyy to yyyy-mm-dd
 function convertDate(dateStr){
+    if(!dateStr.includes("/")){
+        return dateStr; //new system returns dates in yyyy-mm-dd
+    }
     let arr = dateStr.split("/");
     let ret = arr[2];
     if(arr[0]<10) ret += "-0"+arr[0];
