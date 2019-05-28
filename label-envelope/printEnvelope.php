@@ -2,13 +2,10 @@
 /**
  * Prints to reception printer using PCL for envelope formatting 
  */
-
-$printerFile = "\\\\Server2008\ReceptionPrinter";
-$handle2 = fopen($printerFile, 'w') or die('Cannot open file: '.$printerFile);
-
-$esc = chr(27); //escape key ascii
-
 function printEnvelope($qarr){
+    $printerFile = "\\\\Server2008\ReceptionPrinter";
+    $handle2 = fopen($printerFile, 'w') or die('Cannot open file: '.$printerFile);
+    $esc = chr(27); //escape key ascii
     /*
     * Below code only inserts new lines after each addr element
     * */

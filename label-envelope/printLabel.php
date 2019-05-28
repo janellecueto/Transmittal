@@ -3,13 +3,10 @@
  *  Prints to label printer
  * */
 
-
-$printerFile = "Q:\\QPRIV\\Label\\d.lbl";
-$handle2 = fopen($printerFile, 'w') or die('Cannot open file: '.$printerFile);
-
-function printLabel($qarr){
+function sendLabel($qarr){
     $len = sizeof($qarr);
-
+    $printerFile = "Q:\\QPRIV\\Label\\d.lbl";
+    $handle2 = fopen($printerFile, 'w') or die('Cannot open file: '.$printerFile);
     /*
     *  must match format:
     *      label type
@@ -19,7 +16,7 @@ function printLabel($qarr){
     *      address line 1
     *      address line 2
     *      city
-    *      stat
+    *      state
     *      zip
     *      "ParadoxLabelGenerator"
     * */
@@ -58,12 +55,13 @@ function printLabel($qarr){
 
     fwrite($handle3, "Attempting to print Label");
     fclose($handle3);
+    return; 
 }
 
 $q = 0;
 if(array_key_exists("q", $_GET)) {
     $q = $_GET['q']; //array of info 
     $qarr = json_decode($q, true);
-    printLabel($qarr);
+    sendLabel($qarr);
 }
 

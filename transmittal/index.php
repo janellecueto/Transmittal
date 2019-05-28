@@ -366,9 +366,9 @@ $conn->close();
         $("#"+$(this).attr("data-list")).empty();
 
         if($(this).attr("id") == "extraComp1"){
-            $("extraCode1").val($(this).val());
+            $("#extraCode1").val($(this).val());
         } else {
-            $("extraCode2").val($(this).val());
+            $("#extraCode2").val($(this).val());
         }
 
         copyToFill($(this), $(this).val());
@@ -377,10 +377,13 @@ $conn->close();
     $("#transmittalForm").submit(function(e){
         e.preventDefault();
         // sendTransmittal();
+        var formData = $(this).serialize();
+        formDate = formData.replace(/&?[^=]+=&|&[^=]+=$/g,'');
+        console.log(formData);
         $.ajax({
             method: "POST",
             url: "print.php",
-            data: $(this).serialize(),
+            data: formData,
         }).done(function(result){
                 if(result.includes("Error:")){
                     $("#errorBody").html(result);

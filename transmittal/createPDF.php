@@ -99,9 +99,12 @@ function addCheckBoxes($x, $y, $arr, $doc){
  * Start PDF creation
  */
 
-$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+// $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
 function transmittalPDF($pdf){
+    global $jobNumber, $date, $clientNumber, $company, $addr1, $addr2, $city, $state, $zip, $attention;
+    global $project, $rBtn, $via, $items, $copies, $dates, $numbers, $descriptions, $remarks, $signed, $dupl;
+    global $debug, $isJay, $isRick, $isAdmin;
     // set document information
     $pdf->SetCreator(PDF_CREATOR);
     $pdf->SetAuthor('Dickerson Engineering, Inc.');
@@ -271,27 +274,5 @@ function transmittalPDF($pdf){
             else copy($localRoot, $printerPath);
         }
         echo "$dupl transmittal form(s) to $company sent to printer<br>";
-    }
-}
-
-function makeLblEnv($printLbl, $printEnv){
-    $q = [];
-    $q[] = $jobNumber;
-    $q[] = $attention;
-    $q[] = $company;
-    $q[] = $addr1;
-    if($addr2) $q[] = $addr2;
-    $q[] = $city;
-    $q[] = $state;
-    $q[] = $zip;
-
-    $_GET['q'] = json_encode($q);           //print envelope and print label use the same array structure and q as parameter
-    if($printLbl){
-        include("../label-envelope/printLabel.php");
-        echo "Address info sent to label printer<br>";
-    }
-    if($printEnv){
-        include("../label-envelope/printEnvelope.php");
-        echo "Address info sent to envelope printer<br>";
     }
 }
