@@ -371,8 +371,8 @@ function updateBillTotal(){
 function fillDate(){
     let d = new Date();
     let day = d.getDate();
-    console.log(day);
-    console.log(d);
+    // console.log(day);
+    // console.log(d);
     let month = d.getMonth()+1;
     let year = d.getFullYear();
     if(day<10) day = "0"+day;
@@ -383,14 +383,16 @@ function fillDate(){
 
 //This function converts date from format m/d/yyyy to yyyy-mm-dd
 function convertDate(dateStr){
-    if(!dateStr.includes("/")){
+    if(dateStr.includes("-")){
+        console.log(dateStr);
         return dateStr; //new system returns dates in yyyy-mm-dd
     }
+    console.log(dateStr+"!!");
     let arr = dateStr.split("/");
     let ret = arr[2];
-    if(arr[0]<10) ret += "-0"+arr[0];
+    if(parseInt(arr[0])<10) ret += "-0"+arr[0];
     else ret += "-"+arr[0];
-    if(arr[1]<10) ret += "-0"+arr[1];
+    if(parseInt(arr[1])<10) ret += "-0"+arr[1];
     else ret += "-"+arr[1];
     return ret;
 }

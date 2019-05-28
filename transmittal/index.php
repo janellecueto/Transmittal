@@ -331,9 +331,10 @@ $conn->close();
         for(var i = 1; i < 9; i++){
             if(!row["C"+i]) break;
             document.getElementsByName("copies[]")[i-1].value = row["C"+i];
-            document.getElementsByName("dates[]")[i-1].value = convertDate(row["D"+i]);
+            if(row["D"+i].includes("/")) document.getElementsByName("dates[]")[i-1].value = convertDate(row["D"+i]);
+            else document.getElementsByName("dates[]")[i-1].value = row["D"+i];
+            console.log(convertDate(row["D"+i]));
             document.getElementsByName("numbers[]")[i-1].value = parseInt(row["Nn"+i]);
-            console.log(row["Nn1"]);
             document.getElementsByName("descriptions[]")[i-1].value = row["Des"+i];
             if(row["C"+(i+1)]){
                 addNew();
@@ -369,57 +370,53 @@ $conn->close();
 
     $("#transmittalForm").submit(function(e){
         e.preventDefault();
-        $.ajax({
-            type: "POST",
-            url: "print.php",
-            data: $(this).serialize(),
-            success: function(result){
-                if(result.includes("Error:")){
-                    $("#errorBody").html(result);
-                    $("#errorModal").modal("show");
-                }
-                else{
-                    console.log(result);
-                    $("#successBody").html(result);
-                    $("#successModal").modal("show");
-                }
-            },
-            error: function(result){
-                $("#errorBody").html(result);
-                $("#errorModal").show();
-            }
-        });
+        sendTransmittal();
+        // $.ajax({
+        //     method: "POST",
+        //     url: "print.php",
+        //     data: $(this).serialize(),
+        // }).done(function(result){
+        //         if(result.includes("Error:")){
+        //             $("#errorBody").html(result);
+        //             $("#errorModal").modal("show");
+        //         }
+        //         else{
+        //             console.log(result);
+        //             $("#successBody").html(result);
+        //             $("#successModal").modal("show");
+        //         }
+        //     });
 
-        // if($("#extraComp1").val()){
-        //     //send to print.php with extraComp1 info
-        //     addrFill(extraComp1, "clientCode");
-        //     $("#attention").val($("#extraName1").val());
-        //     $("#save").val("0");    //override save to db
+        if($("#extraComp1").val()){
+            //send to print.php with extraComp1 info
+            addrFill(extraComp1, "clientCode");
+            $("#attention").val($("#extraName1").val());
+            $("#save").val("0");    //override save to db
 
-        //     if($("lbl1").attr("checked")) $("#printLblMain").attr("checked",true);
-        //     else $("#printLblMain").attr("checked", false);
-        //     if($("env1").attr("checked")) $("#printEnvMain").attr("checked", true);
-        //     else $("#printEnvMain").attr("checked", false);
+            if($("lbl1").attr("checked")) $("#printLblMain").attr("checked",true);
+            else $("#printLblMain").attr("checked", false);
+            if($("env1").attr("checked")) $("#printEnvMain").attr("checked", true);
+            else $("#printEnvMain").attr("checked", false);
 
-        //     $("#extraComp1").val("");
-        //     $("#extraName1").val("");
-        //     sendTransmittal();
-        // }
-        // if($("#extraComp1").val()){
-        //     //send to print.php with extraComp2 info
-        //     addrFill(extraComp2, "clientCode");
-        //     $("#attention").val($("#extraName2").val());
-        //     $("#save").val("0");    //override save to db
+            $("#extraComp1").val("");
+            $("#extraName1").val("");
+            sendTransmittal();
+        }
+        if($("#extraComp1").val()){
+            //send to print.php with extraComp2 info
+            addrFill(extraComp2, "clientCode");
+            $("#attention").val($("#extraName2").val());
+            $("#save").val("0");    //override save to db
 
-        //     if($("lbl2").attr("checked")) $("#printLblMain").attr("checked",true);
-        //     else $("#printLblMain").attr("checked", false);
-        //     if($("env2").attr("checked")) $("#printEnvMain").attr("checked", true);
-        //     else $("#printEnvMain").attr("checked", false);
+            if($("lbl2").attr("checked")) $("#printLblMain").attr("checked",true);
+            else $("#printLblMain").attr("checked", false);
+            if($("env2").attr("checked")) $("#printEnvMain").attr("checked", true);
+            else $("#printEnvMain").attr("checked", false);
 
-        //     $("#extraComp2").val("");
-        //     $("#extraName2").val("");
-        //     sendTransmittal();
-        // }
+            $("#extraComp2").val("");
+            $("#extraName2").val("");
+            sendTransmittal();
+        }
 
     });
 
@@ -427,7 +424,7 @@ $conn->close();
         $.ajax({
             method: "POST",
             url: "print.php",
-            data: $(this).serialize(),
+            data: $("#transmittalForm").serialize(),
             success: function(result){
                 if(result.includes("Error:")){
                     $("#errorBody").html(result);
