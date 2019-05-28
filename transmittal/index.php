@@ -22,6 +22,9 @@ if($id) {
         if($value == null){
             $row[$key] = "";        //replace nulls with empty strings to pass to javascript
         }
+        if($value == "undefined"){
+            $row[$key] = "";
+        }
     }
 }
 $conn->close();

@@ -156,8 +156,8 @@ $values .= "'$signed')";
 
 $mainQuery .= $values;
 
-echo "hello!<br>";
-echo "$mainQuery";
+// echo "hello!<br>";
+// echo "$mainQuery";
 
 $conn = new mysqli($host, $user, $password, $defaultTbl);
 if($conn->connect_errno){
@@ -166,7 +166,7 @@ if($conn->connect_errno){
 }
 if(!$debug) {
     if (!$conn->query($mainQuery)) {
-        echo "Error: " . $conn->error . "<br>$mainQuery";
+        echo "Error: " . $conn->error . "<br>$mainQuery<br>Form data not saved to db.";
         exit;
     }
 }
@@ -425,7 +425,8 @@ $printerPathJ = '\\\\Server2008\\@hp3800\Transmittal.pdf';         //Jay's print
 
 
 if($debug){
-    copy($localRoot, $printerPathA);
+    // copy($localRoot, $printerPathA);
+    echo "no print because debug :)";
 }
 else {
     for ($i = 0; $i < $dupl; $i++) {            //copy outputed pdf to printer for however many duplicates we need
