@@ -11,6 +11,9 @@ $clientCode = "";
 //if(array_key_exists("clientCode", $_GET)) $clientCode = $_GET['clientCode'];
 $flag = $_GET['flag'];
 $value = $_GET['value'];
+$ret = false;
+if(array_key_exists("ret", $_GET)) $ret = true;
+
 if($flag == "jobNumber") $jobNumber = $value;
 else if($flag == "clientCode") $clientCode = $value;
 
@@ -58,4 +61,8 @@ $retArr['names'] = $nameArr;
 
 $conn->close();
 
-echo json_encode($retArr);
+if($ret){
+    return $retArr;
+} else{
+    echo json_encode($retArr);
+}

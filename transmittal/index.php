@@ -180,25 +180,31 @@ $conn->close();
                 <tbody>
                 <tr>
                     <th scope="row">COPY TO</th>
-                    <td style="width: 25%;"><input type="text" class="form-control form-control-sm extraComp" name="extraComp[]" id="extraComp1" data-list="extraNames1"></td>
+                    <td style="width: 25%;">
+                        <input type="text" class="form-control form-control-sm extraComp" name="extraComp[]" id="extraComp1" data-list="extraNames1">
+                        <input type="hidden" name="extraCode[]" id="extraCode1">
+                    </td>
                     <td style="width: 25%;">
                         <input type="text" class="form-control form-control-sm" name="extraName[]" list="extraNames1" id="extraName1">
                         <datalist id="extraNames1"></datalist>
                     </td>
-                    <td class="text-center"><input type="checkbox" class="form-check-input" id="tr1"></td>
-                    <td class="text-center"><input type="checkbox" class="form-check-input" id="lbl1"></td>
-                    <td class="text-center"><input type="checkbox" class="form-check-input" id="env1"></td>
+                    <td class="text-center"><input type="checkbox" class="form-check-input" name="trOnly[]" value="tr1"></td>
+                    <td class="text-center"><input type="checkbox" class="form-check-input" name="copyLbl[]" value="lbl1"></td>
+                    <td class="text-center"><input type="checkbox" class="form-check-input" name="copyEnv[]" value="env1"></td>
                 </tr>
                 <tr>
                     <th scope="row"></th>
-                    <td style="width: 25%;"><input type="text" class="form-control form-control-sm extraComp" name="extraComp[]" id="extraComp2" data-list="extraNames2"></td>
+                    <td style="width: 25%;">
+                        <input type="text" class="form-control form-control-sm extraComp" name="extraComp[]" id="extraComp2" data-list="extraNames2">
+                        <input type="hidden" name="extraCode[]" id="extraCode1">
+                    </td>
                     <td style="width: 25%;">
                         <input type="text" class="form-control form-control-sm" name="extraName[]" list="extraNames2" id="extraName2">
                         <datalist id="extraNames2"></datalist>
                     </td>
-                    <td class="text-center"><input type="checkbox" class="form-check-input" id="tr2"></td>
-                    <td class="text-center"><input type="checkbox" class="form-check-input" id="lbl2"></td>
-                    <td class="text-center"><input type="checkbox" class="form-check-input" id="env2"></td>
+                    <td class="text-center"><input type="checkbox" class="form-check-input" name="trOnly[]" value="tr2"></td>
+                    <td class="text-center"><input type="checkbox" class="form-check-input" name="copyLbl[]" value="lbl2"></td>
+                    <td class="text-center"><input type="checkbox" class="form-check-input" name="copyEnv[]" value="env2"></td>
                 </tr>
                 </tbody>
             </table>
@@ -360,9 +366,9 @@ $conn->close();
         $("#"+$(this).attr("data-list")).empty();
 
         if($(this).attr("id") == "extraComp1"){
-            extraComp1 = $(this).val();
+            $("extraCode1").val($(this).val());
         } else {
-            extraComp2 = $(this).val();
+            $("extraCode2").val($(this).val());
         }
 
         copyToFill($(this), $(this).val());
@@ -370,53 +376,53 @@ $conn->close();
 
     $("#transmittalForm").submit(function(e){
         e.preventDefault();
-        sendTransmittal();
-        // $.ajax({
-        //     method: "POST",
-        //     url: "print.php",
-        //     data: $(this).serialize(),
-        // }).done(function(result){
-        //         if(result.includes("Error:")){
-        //             $("#errorBody").html(result);
-        //             $("#errorModal").modal("show");
-        //         }
-        //         else{
-        //             console.log(result);
-        //             $("#successBody").html(result);
-        //             $("#successModal").modal("show");
-        //         }
-        //     });
+        // sendTransmittal();
+        $.ajax({
+            method: "POST",
+            url: "print.php",
+            data: $(this).serialize(),
+        }).done(function(result){
+                if(result.includes("Error:")){
+                    $("#errorBody").html(result);
+                    $("#errorModal").modal("show");
+                }
+                else{
+                    console.log(result);
+                    $("#successBody").html(result);
+                    $("#successModal").modal("show");
+                }
+            });
 
-        if($("#extraComp1").val()){
-            //send to print.php with extraComp1 info
-            addrFill(extraComp1, "clientCode");
-            $("#attention").val($("#extraName1").val());
-            $("#save").val("0");    //override save to db
+        // if($("#extraComp1").val()){
+        //     //send to print.php with extraComp1 info
+        //     addrFill(extraComp1, "clientCode");
+        //     $("#attention").val($("#extraName1").val());
+        //     $("#save").val("0");    //override save to db
 
-            if($("lbl1").attr("checked")) $("#printLblMain").attr("checked",true);
-            else $("#printLblMain").attr("checked", false);
-            if($("env1").attr("checked")) $("#printEnvMain").attr("checked", true);
-            else $("#printEnvMain").attr("checked", false);
+        //     if($("lbl1").attr("checked")) $("#printLblMain").attr("checked",true);
+        //     else $("#printLblMain").attr("checked", false);
+        //     if($("env1").attr("checked")) $("#printEnvMain").attr("checked", true);
+        //     else $("#printEnvMain").attr("checked", false);
 
-            $("#extraComp1").val("");
-            $("#extraName1").val("");
-            sendTransmittal();
-        }
-        if($("#extraComp1").val()){
-            //send to print.php with extraComp2 info
-            addrFill(extraComp2, "clientCode");
-            $("#attention").val($("#extraName2").val());
-            $("#save").val("0");    //override save to db
+        //     $("#extraComp1").val("");
+        //     $("#extraName1").val("");
+        //     sendTransmittal();
+        // }
+        // if($("#extraComp1").val()){
+        //     //send to print.php with extraComp2 info
+        //     addrFill(extraComp2, "clientCode");
+        //     $("#attention").val($("#extraName2").val());
+        //     $("#save").val("0");    //override save to db
 
-            if($("lbl2").attr("checked")) $("#printLblMain").attr("checked",true);
-            else $("#printLblMain").attr("checked", false);
-            if($("env2").attr("checked")) $("#printEnvMain").attr("checked", true);
-            else $("#printEnvMain").attr("checked", false);
+        //     if($("lbl2").attr("checked")) $("#printLblMain").attr("checked",true);
+        //     else $("#printLblMain").attr("checked", false);
+        //     if($("env2").attr("checked")) $("#printEnvMain").attr("checked", true);
+        //     else $("#printEnvMain").attr("checked", false);
 
-            $("#extraComp2").val("");
-            $("#extraName2").val("");
-            sendTransmittal();
-        }
+        //     $("#extraComp2").val("");
+        //     $("#extraName2").val("");
+        //     sendTransmittal();
+        // }
 
     });
 
@@ -425,21 +431,17 @@ $conn->close();
             method: "POST",
             url: "print.php",
             data: $("#transmittalForm").serialize(),
-            success: function(result){
+        }).done(function(result){
                 if(result.includes("Error:")){
                     $("#errorBody").html(result);
-                    $("#errorModal").show();
+                    $("#errorModal").modal("show");
                 }
                 else{
+                    console.log(result);
                     $("#successBody").html(result);
-                    $("#successModal").show();
+                    $("#successModal").modal("show");
                 }
-            },
-            error: function(result){
-                $("#errorBody").html(result);
-                $("#errorModal").show();
-            }
-        });
+            });
     }
 
 
