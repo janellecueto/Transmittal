@@ -1,4 +1,8 @@
 <?php
+require_once("../assets/php/info.php");
+include("../assets/php/current.php");
+include_once("../label-envelope/printLabel.php");
+include_once("../label-envelope/printEnvelope.php");
 
 $date = new DateTime($_POST['date']);
 $jobNumber = $_POST['jobNumber'];
@@ -19,6 +23,7 @@ $description = $_POST['description'];
 
 $numSets = $_POST['numSets'];
 $numSheets = $_POST['numSheets'];
+$sheetSizes = $_POST['sheetSizes'];
 
 $colored = $_POST['colored'];
 $costs = $_POST['costs'];

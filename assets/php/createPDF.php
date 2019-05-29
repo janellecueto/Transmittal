@@ -1,6 +1,6 @@
 <?php
 /**********************************************************************************************************************
- * This script handles pdf creation and printing, included in all 'print.php' files for calling print_____ functions 
+ * This script handles pdf creation and printing, included in all 'print.php' files for calling _____PDF functions 
  * for each type of pdf.
  */
 
