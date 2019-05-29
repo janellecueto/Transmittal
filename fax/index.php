@@ -1,3 +1,35 @@
+<?php
+include("../assets/php/info.php");
+
+//If an id is passed in, we are pre-filling out this form
+$id = 0;
+if(array_key_exists('id', $_GET)) $id = intval($_GET['id']);
+
+$conn = new mysqli($host, $user, $password, $defaultTbl);
+if($conn->errno){
+    echo "<br>Error: ".$conn->error;
+    exit();
+}
+
+$row = [];
+//there should be a row corresponding to the id, either in trans or trans91_18
+if($id) {
+    $query = "SELECT * FROM tc.faxtr WHERE Serialno = $id";
+    $result = $conn->query($query);
+    $row = $result->fetch_assoc();
+
+    foreach($row as $key => $value){
+        if($value == null){
+            $row[$key] = "";        //replace nulls with empty strings to pass to javascript
+        }
+        if($value == "undefined"){
+            $row[$key] = "";
+        }
+    }
+}
+$conn->close();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -116,6 +148,31 @@
 
 <script src="../assets/js/main.js"></script>
 <script>
+    //set variables for id and row, if there's an id, there's a row and we have to pre-fill the form with info in row
+    let row = [];
+    let id = 0;
+
+    <?php
+    if($id) {
+        echo "id = $id;";
+        echo "row = ".json_encode($row).";";
+    }
+    ?>
+
+    if(id){
+        $("#jobNumber").val($row['Jn']);
+        $("#clientCode").val($row['Code']);
+        $("#company").val($row['Company']);
+        $("#project").val($row['Project']);
+        $("#attention").val($row['Attention']);
+        $("#fax").val($row['FaxNumber']);
+        $("#remarks").val($row['Remarks']);
+        $("#numPages").val($row['NumberPages']);
+        $("#from").val($row['Signed']);
+    }
+
+
+
     $("#jobNumber").change(function(e){
         e.preventDefault();
         $("#clientNames").empty();
