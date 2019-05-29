@@ -9,11 +9,9 @@
  *  - printing duplicates
  */
 
-// require_once('../../tcpdf6/tcpdf.php');
-// require_once('../../tcpdf6/examples/lang/eng.php');
 require_once("../assets/php/info.php");
 include("../assets/php/current.php");
-include("createPDF.php");
+include_once("../assets/createPDF.php");
 include_once("../label-envelope/printLabel.php");
 include_once("../label-envelope/printEnvelope.php");
 

@@ -346,9 +346,10 @@ $conn->close();
                 addNew();
             }
         }
-    }
 
-    var extraComp1, extraComp2;     //these hold copyto client codes 
+        //NOTE: if we're just printing a copy of a previous transmittal, we don't need to re-enter data in the transmittal tbl
+        $("#save").val("0");
+    }
 
     $("#jobNumber").change(function(e){         //fill address inputs when job number changes
         e.preventDefault();
@@ -395,58 +396,12 @@ $conn->close();
                     $("#successModal").modal("show");
                 }
             });
-
-        // if($("#extraComp1").val()){
-        //     //send to print.php with extraComp1 info
-        //     addrFill(extraComp1, "clientCode");
-        //     $("#attention").val($("#extraName1").val());
-        //     $("#save").val("0");    //override save to db
-
-        //     if($("lbl1").attr("checked")) $("#printLblMain").attr("checked",true);
-        //     else $("#printLblMain").attr("checked", false);
-        //     if($("env1").attr("checked")) $("#printEnvMain").attr("checked", true);
-        //     else $("#printEnvMain").attr("checked", false);
-
-        //     $("#extraComp1").val("");
-        //     $("#extraName1").val("");
-        //     sendTransmittal();
-        // }
-        // if($("#extraComp1").val()){
-        //     //send to print.php with extraComp2 info
-        //     addrFill(extraComp2, "clientCode");
-        //     $("#attention").val($("#extraName2").val());
-        //     $("#save").val("0");    //override save to db
-
-        //     if($("lbl2").attr("checked")) $("#printLblMain").attr("checked",true);
-        //     else $("#printLblMain").attr("checked", false);
-        //     if($("env2").attr("checked")) $("#printEnvMain").attr("checked", true);
-        //     else $("#printEnvMain").attr("checked", false);
-
-        //     $("#extraComp2").val("");
-        //     $("#extraName2").val("");
-        //     sendTransmittal();
-        // }
-
     });
 
-    function sendTransmittal(){
-        $.ajax({
-            method: "POST",
-            url: "print.php",
-            data: $("#transmittalForm").serialize(),
-        }).done(function(result){
-                if(result.includes("Error:")){
-                    $("#errorBody").html(result);
-                    $("#errorModal").modal("show");
-                }
-                else{
-                    console.log(result);
-                    $("#successBody").html(result);
-                    $("#successModal").modal("show");
-                }
-            });
-    }
-
+    $("form input, form textarea, form select").change(function(e){
+        $("#save").val("1");
+        console.log("save=1");
+    })
 
 
 </script>
