@@ -121,23 +121,13 @@ function addTotals($starty, $doc, $set, $sheet, $size, $color, $cost, $total){
     }
 }
 
-
-/***********************************************************************************************************************
- * Start PDF creation
- */
-
-// $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-
-function transmittalPDF($pdf){
-    global $jobNumber, $date, $clientNumber, $company, $addr1, $addr2, $city, $state, $zip, $attention;
-    global $project, $rBtn, $via, $items, $copies, $dates, $numbers, $descriptions, $remarks, $signed, $dupl;
-    global $debug, $printerPath;
-    // set document information
+//function to initialize PDF settings (title, subject, header, etc.)
+function initializePDF($pdf, $title, $jobNumber){
     $pdf->SetCreator(PDF_CREATOR);
     $pdf->SetAuthor('Dickerson Engineering, Inc.');
-    $pdf->SetTitle('DEI Letter of Transmittal For Job # '.$jobNumber);
-    $pdf->SetSubject('Dickerson Engineering Letter of Transmittal');
-    $pdf->SetKeywords('Dickerson, Engineering, transmittal');
+    $pdf->SetTitle('DEI '.$title.' For Job # '.$jobNumber);
+    $pdf->SetSubject('Dickerson Engineering '.$title);
+    $pdf->SetKeywords('Dickerson, Engineering, '.$title.', '.$jobNumber);
 
     // remove default header/footer
     $pdf->setPrintHeader(false);
@@ -159,16 +149,43 @@ function transmittalPDF($pdf){
     $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 
     //set some language-dependent strings
-    //$pdf->setLanguageArray($l);
+    $pdf->setLanguageArray($l);
 
     $pdf->SetFont('helvetica', 'B', 16); // set font
 
     $pdf->AddPage("P","LETTER"); // add a page
 
+    $pdf->SetXY(135,20); // position for image
+    $pdf->Image("../deilogo.jpg",93,9,22); // display image NOTE: 'deilogo.jpg' must be copid into same folder as script
 
     $pdf->SetLineWidth(0.6); // set line width to 0.6mm
     $pdf->Line(11,7,201,7); // draw a line
     $pdf->Line(11,47,201,47);
+
+    $pdf->SetFont('helvetica', 'B', 16); // set font
+    $pdf->Text(10,14,"Dickerson Engineering, Inc."); // write company name
+    $pdf->SetFont('helvetica', '', 12); // set font
+    $pdf->Text(10,21,"3343 North Ridge Avenue"); // write address text
+    $pdf->Text(10,26,"Arlington Heights, Illinois 60004");
+    $pdf->SetFont('helvetica', '', 10); // set font
+    $pdf->Text(10,36,"(847) 966-0290 Fax: (847) 966-0294"); // write text
+}
+
+/***********************************************************************************************************************
+ * Start PDF creation
+ */
+
+// $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+function transmittalPDF($pdf){
+    global $jobNumber, $date, $clientNumber, $company, $addr1, $addr2, $city, $state, $zip, $attention;
+    global $project, $rBtn, $via, $items, $copies, $dates, $numbers, $descriptions, $remarks, $signed, $dupl;
+    global $debug, $printerPath;
+
+    initializePDF($pdf, "Letter of Transmittal", $jobNumber);
+
+
+    $pdf->SetLineWidth(0.6); // set line width to 0.6mm
     $pdf->Line(11,80,201,80);
 
     $pdf->SetLineWidth(0.25); // set line width to 0.25mm
@@ -178,6 +195,7 @@ function transmittalPDF($pdf){
     $pdf->Line(126,26,201,26);
     $pdf->Line(126,33,201,33);
     $pdf->Line(126,40,201,40);
+
     //for copies/description table
     $rectstyle = array('L' => 0,'T' => 0,'R' => 0, 'B' => 0);
     $pdf->Rect(15,116,182,6, 'F', $rectstyle, array(220, 220, 220));
@@ -204,16 +222,10 @@ function transmittalPDF($pdf){
     $pdf->Text(16,186, "Remarks:");
     //    end remarks box
 
-    $pdf->SetXY(135,20); // position for image
-    $pdf->Image("../deilogo.jpg",93,9,22); // display image NOTE: 'deilogo.jpg' must be copid into same folder as script
+
 
     $pdf->SetFont('helvetica', 'B', 16); // set font
-    $pdf->Text(10,14,"Dickerson Engineering, Inc."); // write company name
     $pdf->Text(125,14,"Letter of Transmittal"); // write text
-
-    $pdf->SetFont('helvetica', '', 12); // set font
-    $pdf->Text(10,21,"3343 North Ridge Avenue"); // write address text
-    $pdf->Text(10,26,"Arlington Heights, Illinois 60004");
 
     $pdf->SetFont('helvetica', '', 10); // set font
     $pdf->Text(10,36,"(847) 966-0290 Fax: (847) 966-0294"); // write text
@@ -300,60 +312,16 @@ function transmittalPDF($pdf){
 
 function faxPDF($pdf){
     global $jobNumber, $date, $clientCode, $attention, $company, $fax, $from, $project, $numPages;
-    global $willFollow, $remarks, $printerPath;
+    global $willFollow, $remarks, $printerPath, $debug;
 
-    $pdf->SetCreator(PDF_CREATOR);
-    $pdf->SetAuthor('Dickerson Engineering, Inc.');
-    $pdf->SetTitle('DEI Fax Transmittal For Job # '.$jobNumber);
-    $pdf->SetSubject('Dickerson Engineering Fax Transmittal');
-    $pdf->SetKeywords('Dickerson, Engineering, transmittal, fax, '.$jobNumber);
-
-    // remove default header/footer
-    $pdf->setPrintHeader(false);
-    $pdf->setPrintFooter(false);
-
-    // set default monospaced font
-    $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-
-    // set page orientation
-    $pdf->SetPageOrientation('P');
-
-    //set margins
-    $pdf->SetMargins(0.25,0.25,0.25);
-
-    //set auto page breaks
-    $pdf->SetAutoPageBreak(TRUE, 0.25);
-
-    //set image scale factor
-    $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
-    //set some language-dependent strings
-    $pdf->setLanguageArray($l);
-
-    $pdf->SetFont('helvetica', 'B', 16); // set font
-
-    $pdf->AddPage("P","LETTER"); // add a page
-
-
-    $pdf->SetLineWidth(0.6); // set line width to 0.6mm
-    $pdf->Line(11,7,201,7); // draw a line
-    $pdf->Line(11,47,201,47);
+    initializePDF($pdf);
 
     $pdf->SetLineWidth(0.25); // set line width to 0.25mm
 
-    $pdf->SetXY(135,20); // position for image
-    $pdf->Image('../deilogo.jpg',93,9,22); // display image NOTE: 'deilogo.jpg' must be copid into same folder as script
-
     $pdf->SetFont('helvetica', 'B', 16); // set font
-    $pdf->Text(10,14,"Dickerson Engineering, Inc."); // write company name
     $pdf->Text(125,14,"Fax Transmittal"); // write text
 
-    $pdf->SetFont('helvetica', '', 12); // set font
-    $pdf->Text(10,21,"3343 North Ridge Avenue"); // write address text
-    $pdf->Text(10,26,"Arlington Heights, Illinois 60004");
-
     $pdf->SetFont('helvetica', '', 10); // set font
-    $pdf->Text(10,36,"(847) 966-0290 Fax: (847) 966-0294"); // write text
     $pdf->Text(128,28,"DATE:");
     $pdf->Text(128,35,"DEI #:");
     //$pdf->Text(128,42,"Client #:");
@@ -403,51 +371,23 @@ function faxPDF($pdf){
 
     $pdf->Output($localRoot, 'F');
     //echo $localRoot;
-    copy($localRoot, $mPrinter);
+    if(!$debug){
+        copy($localRoot, $mPrinter);
+    }
+    else{
+        echo "Fax transmittal to $company sent to printer.";
+    }
 }
 
 function billPlotPDF($pdf){
     global $date, $jobNumber, $clientCode, $clientNumber, $attention, $authBy, $project, $invoice;
     global $company, $addr1, $addr2, $city, $state, $zip, $description;
     global $numSets, $numSheets, $sheetSizes, $colored, $costs, $lineTotals, $total;
-    global $printerPath;
+    global $printerPath, $debug;
 
-    $pdf->SetCreator(PDF_CREATOR);
-    $pdf->SetAuthor('Dickerson Engineering, Inc.');
-    $pdf->SetTitle('DEI Plotting Record For Job # '.$jobNumber);
-    $pdf->SetSubject('Dickerson Engineering Plotting Record');
-    $pdf->SetKeywords('Dickerson, Engineering, bill, plot, record, billing, plotting, '.$jobNumber);
-
-    // remove default header/footer
-    $pdf->setPrintHeader(false);
-    $pdf->setPrintFooter(false);
-
-    // set default monospaced font
-    $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-
-    // set page orientation
-    $pdf->SetPageOrientation('P');
-
-    //set margins
-    $pdf->SetMargins(0.25,0.25,0.25);
-
-    //set auto page breaks
-    $pdf->SetAutoPageBreak(TRUE, 0.25);
-
-    //set image scale factor
-    $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
-    //set some language-dependent strings
-    $pdf->setLanguageArray($l);
-
-    $pdf->SetFont('helvetica', 'B', 16); // set font
-
-    $pdf->AddPage("P","LETTER"); // add a page
-
+    initializePDF($pdf, "Plotting Record", $jobNumber);
 
     $pdf->SetLineWidth(0.6); // set line width to 0.6mm
-    $pdf->Line(11,7,201,7); // draw a line
-    $pdf->Line(11,47,201,47);
     $pdf->Line(11,80,201,80);
 
     $pdf->SetLineWidth(0.25); // set line width to 0.25mm
@@ -468,20 +408,12 @@ function billPlotPDF($pdf){
     $pdf->Text(16,151, "Description:");
     //end remarks box
 
-    $pdf->SetXY(135,20); // position for image
-    $pdf->Image("../deilogo.jpg",93,9,22); // display image
 
     $pdf->SetFont('helvetica', 'B', 16); // set font
-    $pdf->Text(10,14,"Dickerson Engineering, Inc."); // write company name
     $pdf->Text(125,14,"Plotting Record #"); // TODO: add bill record #
     $pdf->Text(175, 14, $invoice);
 
-    $pdf->SetFont('helvetica', '', 12); // set font
-    $pdf->Text(10,21,"3343 North Ridge Avenue"); // write address text
-    $pdf->Text(10,26,"Arlington Heights, Illinois 60004");
-
     $pdf->SetFont('helvetica', '', 10); // set font
-    $pdf->Text(10,36,"(847) 966-0290 Fax: (847) 966-0294"); // write text
     $pdf->Text(128,28,"DATE:");
     $pdf->Text(128,35,"DEI #:");
     $pdf->Text(128,42,"Client #:");
@@ -550,3 +482,5 @@ function billPlotPDF($pdf){
     copy($localRoot, $mPrinter);
 
 }
+
+
