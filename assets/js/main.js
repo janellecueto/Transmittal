@@ -212,6 +212,9 @@ function addrFill(value, flag, url="../assets/php/fillAddress.php"){
             flag: flag
         },
         success: function(result){
+            if(result.includes("Error:")){
+                return;
+            }
             let data = JSON.parse(result);
             if(flag === "jobNumber"){
                 $("#clientCode").val(data["clientCode"]);
@@ -257,6 +260,9 @@ function copyToFill(input, value, url="../assets/php/fillAddress.php"){
             flag: "clientCode"
         },
         success: function(result){
+            if(result.includes("Error:")){
+                return;
+            }
             let data = JSON.parse(result);
             input.val(data["company"]);
             let clnames = $("#"+input.attr("data-list"));
@@ -264,11 +270,13 @@ function copyToFill(input, value, url="../assets/php/fillAddress.php"){
             if(input.attr("data-fax")){
                 $("#"+input.attr("data-fax")).val(data["fax"]);
             }
-            data["names"].forEach(function(item){
-                var opt = $("<option>");
-                opt.val(item).text(item);
-                clnames.append(opt);
-            });
+            if(data["names"].length){
+                data["names"].forEach(function(item){
+                    var opt = $("<option>");
+                    opt.val(item).text(item);
+                    clnames.append(opt);
+                });
+            }
         },
         error: function(result){
             alert("error: "+result);
@@ -291,6 +299,10 @@ function faxFill(value, flag, url="../assets/php/fillAddress.php"){
             flag: flag
         },
         success: function(result){
+            if(result.includes("Error:")){
+                //make warning thingies 
+                return;
+            }
             let data = JSON.parse(result);
             if(flag === "jobNumber"){
                 $("#clientCode").val(data["clientCode"]);
@@ -303,11 +315,13 @@ function faxFill(value, flag, url="../assets/php/fillAddress.php"){
             $("#fax").val(data["fax"]);
 
             let clnames = $("#clientNames");
-            data["names"].forEach(function(item){
-                var opt = $("<option>");
-                opt.val(item).text(item);
-                clnames.append(opt);
-             });
+            if(data["names"].length){
+                data["names"].forEach(function(item){
+                    var opt = $("<option>");
+                    opt.val(item).text(item);
+                    clnames.append(opt);
+                });
+            }
         }
     });
 }

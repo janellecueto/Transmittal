@@ -54,7 +54,7 @@ $conn->close();
                     <div class="col-md-5">
                         <div class="row">
                             <div class="col-6"><input type="text" class="form-control form-control-sm" name="jobNumber" id="jobNumber" placeholder="Job Number"></div>
-                            <div class="col-6"><input type="text" class="form-control form-control-sm" name="clietnCode" id="clietnCode" placeholder="Client Code"></div>
+                            <div class="col-6"><input type="text" class="form-control form-control-sm" name="clientCode" id="clientCode" placeholder="Client Code"></div>
                         </div>
                     </div>
                     <div class="col-md-7">
@@ -112,7 +112,10 @@ $conn->close();
                         <tbody>
                         <tr>
                             <th scope="row">COPY TO</th>
-                            <td><input type="text" class="form-control form-control-sm extraComp" name="extraComp[]" data-list="extraNames1" data-fax="extraFax1"></td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm extraComp" name="extraComp[]" data-list="extraNames1" data-fax="extraFax1" data-code="extraCode1">
+                                <input type="hidden" name="extraCode[]" id="extraCode1">
+                            </td>
                             <td>
                                 <input type="text" class="form-control form-control-sm" name="extraName[]" list="extraNames1">
                                 <datalist id="extraNames1"></datalist>
@@ -121,7 +124,10 @@ $conn->close();
                         </tr>
                         <tr>
                             <th scope="row"></th>
-                            <td><input type="text" class="form-control form-control-sm extraComp" name="extraComp[]" data-list="extraNames2" data-fax="extraFax2"></td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm extraComp" name="extraComp[]" data-list="extraNames2" data-fax="extraFax2" data-code="extraCode2">
+                                <input type="hidden" name="extraCode[]" id="extraCode2">
+                            </td>
                             <td>
                                 <input type="text" class="form-control form-control-sm" name="extraName[]" list="extraNames2">
                                 <datalist id="extraNames2"></datalist>
@@ -160,15 +166,15 @@ $conn->close();
     ?>
 
     if(id){
-        $("#jobNumber").val($row['Jn']);
-        $("#clientCode").val($row['Code']);
-        $("#company").val($row['Company']);
-        $("#project").val($row['Project']);
-        $("#attention").val($row['Attention']);
-        $("#fax").val($row['FaxNumber']);
-        $("#remarks").val($row['Remarks']);
-        $("#numPages").val($row['NumberPages']);
-        $("#from").val($row['Signed']);
+        $("#jobNumber").val(row['Jn']);
+        $("#clientCode").val(row['Code']);
+        $("#company").val(row['Company']);
+        $("#project").val(row['Project']);
+        $("#attention").val(row['Attention']);
+        $("#fax").val(row['FaxNumber']);
+        $("#remarks").val(row['Remarks']);
+        $("#numPages").val(row['NumberPages']);
+        $("#from").val(row['Signed']);
     }
 
 
@@ -186,6 +192,7 @@ $conn->close();
     $(".extraComp").change(function(e){
         e.preventDefault();
         $("#"+$(this).attr("data-list")).empty();
+        $("#"+$(this).attr("data-code")).val($(this).val());
         copyToFill($(this), $(this).val());
     });
 

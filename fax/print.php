@@ -86,7 +86,7 @@ if(intval($save)){
             echo "New record created successfully in fax_test";
         }
         else{
-            echo "<br>ERROR: ".$conn->error;
+            echo "ERROR: ".$conn->error;
         }
     }
     else{
@@ -97,3 +97,16 @@ if(intval($save)){
 //$serialResult->free();
 // $serial = findCurrentNo($conn, $sfQuery);
 mysqli_close($conn);
+
+$mainPdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+faxPDF($mainPdf);
+
+//print copy tos 
+
+for($i = 0; $i < 2; $i++){
+    if($extraComp[$i]){
+        $_GET['value'] = $extraCode[$i];
+        $_GET['flag'] = "clientCode";
+        $_GET['ret'] = 1;
+    }
+}

@@ -303,7 +303,6 @@ function transmittalPDF($pdf){
     }
     else {
         for ($i = 0; $i < $dupl; $i++) {            //copy outputed pdf to printer for however many duplicates we need
-            
             copy($localRoot, $mPrinter);
         }
         echo "$dupl transmittal form(s) to $company sent to printer<br>";
@@ -315,8 +314,6 @@ function faxPDF($pdf){
     global $willFollow, $remarks, $printerPath, $debug;
 
     initializePDF($pdf);
-
-    $pdf->SetLineWidth(0.25); // set line width to 0.25mm
 
     $pdf->SetFont('helvetica', 'B', 16); // set font
     $pdf->Text(125,14,"Fax Transmittal"); // write text
@@ -373,9 +370,10 @@ function faxPDF($pdf){
     //echo $localRoot;
     if(!$debug){
         copy($localRoot, $mPrinter);
+        echo "Fax transmittal to $company sent to printer<br>";
     }
     else{
-        echo "Fax transmittal to $company sent to printer.";
+        echo "DEBUG:<br>Fax transmittal to $company sent to printer (not)<br>";
     }
 }
 
@@ -479,7 +477,13 @@ function billPlotPDF($pdf){
 
     $pdf->Output($localRoot, 'F');
 
-    copy($localRoot, $mPrinter);
+    if(!$debug){
+        copy($localRoot, $mPrinter);
+        echo "Bill plot to $company sent to printer<br>";
+    }
+    else{
+        echo "DEBUG:<br>Bill plot to $company sent to printer";
+    }
 
 }
 
