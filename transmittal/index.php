@@ -19,11 +19,8 @@ if($id) {
     $row = $result->fetch_assoc();
 
     foreach($row as $key => $value){
-        if($value == null){
+        if($value == null || $value == "undefined"){
             $row[$key] = "";        //replace nulls with empty strings to pass to javascript
-        }
-        if($value == "undefined"){
-            $row[$key] = "";
         }
     }
 }
@@ -340,7 +337,7 @@ $conn->close();
             if(row["D"+i].includes("/")) document.getElementsByName("dates[]")[i-1].value = convertDate(row["D"+i]);
             else document.getElementsByName("dates[]")[i-1].value = row["D"+i];
             console.log(convertDate(row["D"+i]));
-            document.getElementsByName("numbers[]")[i-1].value = parseInt(row["Nn"+i]);
+            document.getElementsByName("numbers[]")[i-1].value = (row["Nn"+i] ? parseInt(row["Nn"+i]) : "");
             document.getElementsByName("descriptions[]")[i-1].value = row["Des"+i];
             if(row["C"+(i+1)]){
                 addNew();

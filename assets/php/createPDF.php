@@ -4,8 +4,8 @@
  * for each type of pdf.
  */
 
-require_once('../../tcpdf6/tcpdf.php');     //require tcpdf library
-require_once('../../tcpdf6/examples/lang/eng.php');
+require_once('C:\\Webroot\\tcpdf6\\tcpdf.php');     //require tcpdf library
+require_once('C:\\Webroot\\tcpdf6/examples/lang/eng.php');
 
 /***********************************************************************************************************************
  * Set up printer global
@@ -149,7 +149,7 @@ function initializePDF($pdf, $title, $jobNumber){
     $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 
     //set some language-dependent strings
-    $pdf->setLanguageArray($l);
+    // $pdf->setLanguageArray($l);
 
     $pdf->SetFont('helvetica', 'B', 16); // set font
 
@@ -177,13 +177,13 @@ function initializePDF($pdf, $title, $jobNumber){
 
 // $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-function transmittalPDF($pdf){
+function transmittalPDF(){
     global $jobNumber, $date, $clientNumber, $company, $addr1, $addr2, $city, $state, $zip, $attention;
     global $project, $rBtn, $via, $items, $copies, $dates, $numbers, $descriptions, $remarks, $signed, $dupl;
     global $debug, $printerPath;
 
+    $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
     initializePDF($pdf, "Letter of Transmittal", $jobNumber);
-
 
     $pdf->SetLineWidth(0.6); // set line width to 0.6mm
     $pdf->Line(11,80,201,80);
@@ -221,8 +221,6 @@ function transmittalPDF($pdf){
     $pdf->SetFont('helvetica', 'B', 10);
     $pdf->Text(16,186, "Remarks:");
     //    end remarks box
-
-
 
     $pdf->SetFont('helvetica', 'B', 16); // set font
     $pdf->Text(125,14,"Letter of Transmittal"); // write text
@@ -305,14 +303,15 @@ function transmittalPDF($pdf){
         for ($i = 0; $i < $dupl; $i++) {            //copy outputed pdf to printer for however many duplicates we need
             copy($localRoot, $mPrinter);
         }
-        echo "$dupl transmittal form(s) to $company sent to printer<br>";
+        echo "$dupl transmittal form(s) to $company ($addr1,$city) sent to printer<br>";
     }
 }
 
-function faxPDF($pdf){
+function faxPDF(){
     global $jobNumber, $date, $clientCode, $attention, $company, $fax, $from, $project, $numPages;
     global $willFollow, $remarks, $printerPath, $debug;
 
+    $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
     initializePDF($pdf);
 
     $pdf->SetFont('helvetica', 'B', 16); // set font
@@ -377,12 +376,13 @@ function faxPDF($pdf){
     }
 }
 
-function billPlotPDF($pdf){
+function billPlotPDF(){
     global $date, $jobNumber, $clientCode, $clientNumber, $attention, $authBy, $project, $invoice;
     global $company, $addr1, $addr2, $city, $state, $zip, $description;
     global $numSets, $numSheets, $sheetSizes, $colored, $costs, $lineTotals, $total;
     global $printerPath, $debug;
 
+    $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
     initializePDF($pdf, "Plotting Record", $jobNumber);
 
     $pdf->SetLineWidth(0.6); // set line width to 0.6mm

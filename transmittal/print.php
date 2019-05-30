@@ -11,7 +11,7 @@
 
 require_once("../assets/php/info.php");
 include("../assets/php/current.php");
-include_once("../assets/createPDF.php");
+include_once("../assets/php/createPDF.php");
 include_once("../label-envelope/printLabel.php");
 include_once("../label-envelope/printEnvelope.php");
 
@@ -135,8 +135,9 @@ if($save){
 // $serialNo = findCurrent($conn, $transTbl);   //it appears that we don't print this anymore? i forget (JC 05.28.2019)
 $conn->close();
 
-$mainPdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-transmittalPDF($mainPdf);
+// $mainPdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+// transmittalPDF($mainPdf);
+transmittalPDF();
 // makeLblEnv($printLblMain, $printEnvMain);
 $q = [];
 $q[] = $jobNumber;
@@ -160,31 +161,39 @@ if($printEnvMain){
 
 //now check for extras
 for($i = 0; $i<2; $i++){
-    if($extraCode[$i]){
+    if($extraComp[$i]){
         if($debug){
             echo "extraCode".$i."<br>";
         }
-        $_GET['value'] = $extraCode[$i];
-        $_GET['flag'] = "clientCode";
+        $_GET['value'] = $extraComp[$i];
+        $_GET['flag'] = "company";
         $_GET['ret'] = 1;
         $extraInfo = include("../assets/php/fillAddress.php");
-        if($debug){
-            echo implode(",", $extraInfo);
+        if(!$extraInfo){
+            echo "No client code for ".$extraComp[$i]."?";
+            //if fillAddress.php returns 0, there's no client matching client code/company
+            continue; //skip this one, but check next one
         }
 
         $q = []; //reset $q
         $q[] = $jobNumber;
-        $q[] = $extraName[$i];
-        $q[] = $extraInfo['company'];
-        $q[] = $extraInfo['addr1'];
-        if($extraInfo['addr2']) $q[] = $extraInfo['addr2'];
-        $q[] = $extraInfo['city'];
-        $q[] = $extraInfo['state'];
-        $q[] = $extraInfo['zip'];
+        $q[] = $attention = $extraName[$i];
+        $q[] = $company = $extraComp[$i];
+
+        $q[] = $addr1 = $extraInfo['addr1'];
+        $addr2 = "";
+        if($extraInfo['addr2']) $q[] = $addr2 = $extraInfo['addr2'];
+        $q[] = $city = $extraInfo['city'];
+        $q[] = $state =  $extraInfo['state'];
+        $q[] = $zip = $extraInfo['zip'];
+
+        if($debug){
+            echo "$addr1";
+        }
         
         
-        $copyPdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-        transmittalPDF($copyPdf);
+        // $copyPdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        transmittalPDF();
 
         
         if(!$debug){
@@ -194,10 +203,6 @@ for($i = 0; $i<2; $i++){
             if($copyEnv && in_array("env".($i+1), $copyEnv)){
                 printEnvelope($q);
             }
-        }
-        else{
-            echo "printLblCopy: $copyLbl<br>";
-            echo "printEnvCopy: $copyEnv<br>";
         }
     }
 }

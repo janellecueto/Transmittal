@@ -105,8 +105,11 @@ faxPDF($mainPdf);
 
 for($i = 0; $i < 2; $i++){
     if($extraComp[$i]){
-        $_GET['value'] = $extraCode[$i];
-        $_GET['flag'] = "clientCode";
-        $_GET['ret'] = 1;
+        $company = $extraComp[$i];
+        $attention = $extraname[$i];
+        $fax = $extraFax[$i];
+
+        $copyPdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        faxPDF($copyPdf);
     }
 }

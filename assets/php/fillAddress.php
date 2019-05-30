@@ -4,8 +4,7 @@
  */
 include("info.php");
 
-$jobNumber = "";
-$clientCode = "";
+$jobNumber = $clientCode = $company = "";
 
 //if(array_key_exists("jobNumber", $_GET)) $jobNumber = $_GET['jobNumber'];
 //if(array_key_exists("clientCode", $_GET)) $clientCode = $_GET['clientCode'];
@@ -16,6 +15,7 @@ if(array_key_exists("ret", $_GET)) $ret = true;
 
 if($flag == "jobNumber") $jobNumber = $value;
 else if($flag == "clientCode") $clientCode = $value;
+else if($flag == "company") $company = $value;
 
 $conn = new mysqli($host, $user, $password, $defaultTbl);
 if($conn->errno){
@@ -43,7 +43,11 @@ if($jobNumber) {
     }
 }
 
-$query = "SELECT company, addr1, addr2, city, state, zip, fax FROM tc.clients WHERE code = '$clientCode'";
+$query = "SELECT company, addr1, addr2, city, state, zip, fax FROM tc.clients WHERE ";
+
+if($company) $query .= "company = '$company'";
+else $query .= "code = '$clientCode'";
+
 $namesQuery = "SELECT `name` FROM tc.clnames WHERE code = '$clientCode' AND `name` NOT LIKE '%Cell%'";
 $result = $conn->query($query);
 
@@ -67,6 +71,7 @@ if($row = $result->fetch_array()){
 }
 else{
     if($ret){
+        echo "$clientCode or $company does not exist";
         return 0;
     } else{
         echo "Error: client code $clientCode does not exist<br>";
