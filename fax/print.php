@@ -28,20 +28,6 @@ $extraFax = $_POST['extraFax'];
 
 $save = $_POST['save'];
 
-// echo "hello!<br>";
-// echo "jobNumber: $jobNumber<br>";
-// echo "clientCode: $clientCode<br>";
-// echo "date: ".$date->format("Y-m-d")."<br>";
-// echo "attention: $attention<br>";
-// echo "company: $company<br>";
-// echo "fax: $fax<br>";
-// echo "from: $from<br>";
-// echo "numPages: $numPages<br>";
-// echo "willFollow: $willFollow<br>";
-// echo "remarks: $remarks<br>";
-// echo "extraComp: ".implode(", ", $extraComp)."<br>";
-// echo "extraName: ".implode(", ", $extraName)."<br>";
-// echo "extraFax: ".implode(", ", $extraFax)."<br>";
 $conn = new mysqli($host, $user, $password, $defaultTbl);
 if($conn->errno){
     echo "Error: ".$conn->error();

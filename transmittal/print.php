@@ -158,6 +158,7 @@ if($printLblMain){
     echo "$company address info sent to label printer<br>";
 }
 if($printEnvMain){
+    array_shift($q);    //removes first element, jobNumber, from q array
     printEnvelope($q);
     echo "$company address info sent to envelope printer<br>";
 }
@@ -196,16 +197,15 @@ for($i = 0; $i<2; $i++){
         // $copyPdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
         transmittalPDF();
 
-        
-        // if(!$debug){
-            if($copyLbl && in_array('lbl'.($i+1), $copyLbl)){
-                sendLabel($q);
-                echo "$company address info sent to label printer<br>";
-            }
-            if($copyEnv && in_array("env".($i+1), $copyEnv)){
-                printEnvelope($q);
-                echo "$company address info sent to envelope printer<br>";
-            }
-        // }
+        if($copyLbl && in_array('lbl'.($i+1), $copyLbl)){
+            sendLabel($q);
+            echo "$company address info sent to label printer<br>";
+        }
+        if($copyEnv && in_array("env".($i+1), $copyEnv)){
+            array_shift($q);    //removes first element, jobNumber, from q array
+            printEnvelope($q);
+            echo "$company address info sent to envelope printer<br>";
+        }
+
     }
 }

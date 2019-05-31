@@ -104,9 +104,14 @@ $("#addNew").click(addNew);     //attach addNew function on #addNew button click
 let bpRowCount = 0;     //this counter will indicate the index in each array that the "Colored" checkboxes
                         //align with
 $("#addRow").click(function(){
+    console.log(bpRowCount);
     let wrapper = $("#rowWrapper");
     let newRow = $("<tr>");
     bpRowCount++;
+    if(bpRowCount > 3){
+        console.log(bpRowCount);
+        return; //don't add any more than 4 rows
+    }
 
     let setsTd = $("<td>");
     let setsIn = $("<input>");

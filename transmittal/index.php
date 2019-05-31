@@ -12,9 +12,10 @@ if($conn->errno){
 }
 
 $row = [];
-//there should be a row corresponding to the id, either in trans or trans91_18
+//there should be a row corresponding to the id, we could check the old table but this is mostly for recent documents
+//(disregard <type>TblOld)
 if($id) {
-    $query = "SELECT * FROM tc.trans WHERE Serialno = $id";
+    $query = "SELECT * FROM $defaultTbl.$transTbl WHERE Serialno = $id";
     $result = $conn->query($query);
     $row = $result->fetch_assoc();
 

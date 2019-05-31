@@ -6,8 +6,6 @@ include("info.php");
 
 $jobNumber = $clientCode = $company = "";
 
-//if(array_key_exists("jobNumber", $_GET)) $jobNumber = $_GET['jobNumber'];
-//if(array_key_exists("clientCode", $_GET)) $clientCode = $_GET['clientCode'];
 $flag = $_GET['flag'];
 $value = $_GET['value'];
 $ret = false;
