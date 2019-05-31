@@ -18,9 +18,12 @@ $query = "SELECT * FROM tc.mcosts_test";
 $result = $conn->query($query);
 $rows = $result->fetch_all();        //fetch all returns all rows from table. there should only be 18 for ss1 - ss9
 
-if($ret){
+if($ret === 1){
     echo json_encode($rows);
     exit;
+} else if($ret === 2){
+    return $rows;
+    exit;   //i don't think i need the exit here?
 }
 $conn->close();
 

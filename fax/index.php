@@ -62,7 +62,7 @@ $conn->close();
                         <div class="row">
                             <label for="date" class="col-3">Date</label>
                             <div class="col-9">
-                                <input type="date" class="form-control form-control-sm" name="date" id="date">
+                                <input type="date" class="form-control form-control-sm auto-date" name="date" id="date">
                             </div>
                         </div>
 
@@ -74,7 +74,8 @@ $conn->close();
                         <datalist id="clientNames"></datalist>
                         <input type="text" class="form-control form-control-sm" id="company" name="company" placeholder="Company">
                         <input type="text" class="form-control form-control-sm" id="fax" name="fax" placeholder="Fax Number" required>
-                        <input type="text" class="form-control form-control-sm" id="from" name="from" placeholder="From">
+                        <input type="text" class="form-control form-control-sm" id="from" name="from" placeholder="From" list="deiList">
+                        <datalist id="deiList"></datalist>
                     </div>
                     <div class="col-md-7">
                         <div class="form-group row">
@@ -193,6 +194,9 @@ $conn->close();
 
 <script src="../assets/js/main.js"></script>
 <script>
+
+$(".auto-date").val(fillDate());
+    $(document).ready(fillDEI);
     //set variables for id and row, if there's an id, there's a row and we have to pre-fill the form with info in row
     let row = [];
     let id = 0;

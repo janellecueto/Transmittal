@@ -227,7 +227,7 @@ $conn->close();
                         <label for="signed" class="col-4 text-right">Signed</label>
                         <div class="col-8">
                             <input type="text" id="signed" name="signed" class="form-control form-control-sm" list="deiEmps" required>
-                            <datalist id="deiEmps"></datalist>
+                            <datalist id="deiList"></datalist>
                         </div>
                     </div>
                     <div class="row">
@@ -289,6 +289,7 @@ $conn->close();
     $("#dupl").mask("#0"); //limit to 99 duplicates :)
     $(".num").mask("#");
     $(".auto-date").val(fillDate());
+    $(document).ready(fillDEI);
 
     //set variables for id and row, if there's an id, there's a row and we have to pre-fill the form with info in row
     let row = [];

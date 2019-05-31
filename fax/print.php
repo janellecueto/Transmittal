@@ -35,8 +35,8 @@ if($conn->errno){
 }
 
 if(intval($save)){
-    $mainQuery = "INSERT INTO tc.$faxTbl (`Date`, Code, Company, Jn, Project, Attention, FaxNumber, NumberPages, ";
-    $values = " VALUES('$date', '$clientCode', '$company', '$jobNumber', '$project', '$attention', '$fax', $numPages, ";
+    $mainQuery = "INSERT INTO $defaultTbl.$faxTbl (`Date`, Code, Company, Jn, Project, Attention, FaxNumber, NumberPages, ";
+    $values = " VALUES('".$date->format("Y-m-d")."', '$clientCode', '$company', '$jobNumber', '$project', '$attention', '$fax', $numPages, ";
     if($remarks){
         $mainQuery .= "Remarks, ";
         $values .= "'$remarks',";

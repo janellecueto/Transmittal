@@ -31,6 +31,25 @@ function setPrices(){
     });
 }
 
+function fillDEI(){
+    $.ajax({
+        method: "GET",
+        url: "../assets/php/fillAddress.php",
+        data:{
+            value: "DEI",
+            flag: "clientCode"
+        }
+    }).then(function(result){
+        let data = JSON.parse(result);
+        let deiList = $("#deiList");
+        data["names"].forEach(function(item){
+            var opt = $("<option>");
+            opt.val(item).text(item);
+            deiList.append(opt);
+        });
+    });
+}
+
 /***********************************************************************************************************************
  * Functions below are used on click for adding new rows
  */
@@ -103,7 +122,7 @@ $("#addNew").click(addNew);     //attach addNew function on #addNew button click
  */
 let bpRowCount = 0;     //this counter will indicate the index in each array that the "Colored" checkboxes
                         //align with
-$("#addRow").click(function(){
+function addRow(){
     console.log(bpRowCount);
     let wrapper = $("#rowWrapper");
     let newRow = $("<tr>");
@@ -194,8 +213,9 @@ $("#addRow").click(function(){
     newRow.append(lineTd);
 
     wrapper.append(newRow);
+}
 
-});
+$("#addRow").click(addRow);
 
 
 /***********************************************************************************************************************
@@ -352,7 +372,7 @@ function updateLineTotal(){
     let setsBySheets = (sets && sheets) ? parseInt(sets) * parseInt(sheets) : 0;        //multiply both vals if given else 0
 
     let sheetSize = parent.find("td:nth-child(3)").find("select").val();
-    // console.log(parent.find("td:nth-child(3)").find("select").val());
+    console.log(sheetSize);
 
     //NOTE: media type is always paper :/ we may remove this column in the future which means the following index
     //      would need to be changed

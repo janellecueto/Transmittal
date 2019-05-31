@@ -30,6 +30,9 @@ if($id) {
     }
 }
 $conn->close();
+
+$_GET['ret'] = 2;
+$sheets = include("plottingPrices.php");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -50,7 +53,7 @@ $conn->close();
     <div class="container">
         <h2 class="top-sm">Plotting Set Biller Form</h2>
         <div class="form-wrapper">
-            <form action="print.php" method="post">
+            <form id="billForm">
                 <div class="form-group row">
                     <div class="col-md-6">
                         <div class="row">
@@ -149,7 +152,7 @@ $conn->close();
                                 </select>
                             </td>
                             <td class="text-center">
-                                <input type="checkbox" class="form-check-input" name="colored[]" id="color1" value="0">
+                                <input type="checkbox" class="form-check-input" name="colored[]" value="0">
                             </td>
                             <td><input type="text" name="costs[]" class="form-control form-control-sm money cost-money" placeholder="$0.00" readonly></td>
                             <td><input type="text" name="lineTotals[]" class="form-control form-control-sm money total-money" placeholder="$0.00" readonly></td>
@@ -175,6 +178,7 @@ $conn->close();
                         </div>
                     </div>
                 </div>
+                <input type="hidden" name="save" id="save" value="1">
             </form>
         </div>
     </div>
@@ -197,7 +201,44 @@ $conn->close();
             </div>
         </div>
     </div>
-
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Sent to printer</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="successBody">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <a href="../" class="btn btn-primary">Exit to Transmittal Home</a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Error</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="errorBody">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <a href="../" class="btn btn-primary">Exit to Transmittal Home</a>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script src="../assets/js/jquery-3.3.1.js"></script>
 <script src="../assets/js/jquery.mask.js"></script>
@@ -206,7 +247,6 @@ $conn->close();
 <script src="../assets/js/main.js"></script>
 <script>
     $(".auto-date").val(fillDate());
-
     let sheetSizes = {
         ss1: ["24 x 36"],
         ss2: ["30 x 42"],
@@ -219,10 +259,8 @@ $conn->close();
         ss9: ["22 x 34"]
     };
 
-    $(document).ready(setPrices);
-
-    //set variables for id and row, if there's an id, there's a row and we have to pre-fill the form with info in row
     let row = [];
+    let sheets = [];
     let id = 0;
 
     <?php
@@ -230,25 +268,74 @@ $conn->close();
         echo "id = $id;";
         echo "row = ".json_encode($row).";";
     }
+    if($sheets){
+        echo "sheets = ".json_encode($sheets).";";
+    }
     ?>
+    var index = 0;
+    for(var key in sheetSizes){
+        var colorCost = parseFloat(sheets[index][3].substring(1));
+        var noColorCost = parseFloat(sheets[index+1][3].substring(1));
+        sheetSizes[key].push(colorCost);
+        sheetSizes[key].push(noColorCost);
+        index += 2;
+    }
+    console.log(sheetSizes);
 
+
+    // $(document).ready(setPrices);
+
+    let revSizes = {        //i realized in the db that we store the sheet sizes instead of ss<i> :/
+        "24 x 36": "ss1",
+        "30 x 42": "ss2",
+        "36 x 48": "ss3",
+        "8.5 x 11": "ss4",
+        "11 x 17": "ss5",
+        "12 x 18": "ss6",
+        "15 x 21" : "ss7",
+        "18 x 24" : "ss8",
+        "22 x 34" : "ss9"
+    }
+
+    //set variables for id and row, if there's an id, there's a row and we have to pre-fill the form with info in row
+
+
+$(document).ready(function(){
     if(id){
         $("#jobNumber").val(row['Jn']);
         $("#clientCode").val(row['Code']);
+        $("#clientNumber").val(row['Client_num']);
         $("#attention").val(row['Attn']);
-        $("#company").val(row['Copmany']);
+        $("#company").val(row['Company']);
         $("#addr1").val(row['Addr1']);
         $("#addr2").val(row['Addr2']);
         $("#city").val(row['City']);
         $("#state").val(row['State']);
+        $("#zip").val(row['Zip']);
         $("#authBy").val(row['RequestedBy']);
         $("#project").val(row['Project']);
         $("#description").val(row['Description']);
 
         for(var i = 1; i < 5; i++){
+            if(!row["Sets"+i]) break;
+            $("input[name='numSheets[]']:nth-child("+(i-1)+")").bind("rowLoaded", updateLineTotal); 
+            $("input[name='numSheets[]']:nth-child("+(i)+")").bind("rowLoaded",updateLineTotal);  //need to bind updateLineTotal to an element
+            document.getElementsByName("numSets[]")[i-1].value = parseInt(row["Sets"+i]);           //for $(this)
+            document.getElementsByName("numSheets[]")[i-1].value = parseInt(row["Copies"+i]);
+            document.getElementsByName("sheetSizes[]")[i-1].value = revSizes[row["Size"+i]];
+            if(row["Color"+i] === "Y") document.getElementsByName("colored[]")[i-1].checked = true;
+            document.getElementsByName("costs[]")[i-1].value = row["Cost"+i];
             
-        }
+            if(row["Sets"+(i+1)]) addRow();
+            $("input[name='numSheets[]']:nth-child("+(i)+")").trigger("rowLoaded");        
+            $("input[name='numSheets[]']:nth-child("+(i-1)+")").trigger("rowLoaded");           //idk. for some reason i need to do both for when there are
+        }                                                                                       //multiple rows being loaded in
+        // $("input[name='numSheets[]']:nth-child("+(i-1)+")").trigger("rowLoaded");        
+        $("#total").val(row['BillTotal']);
+        $("#save").val("0");
     }
+});
+
 
     $("input.num").mask("#");
 
@@ -268,7 +355,37 @@ $conn->close();
         addrFill($(this).val(), "clientCode");
     });
 
+    $("#billForm").submit(function(e){
+        e.preventDefault();
+        // sendTransmittal();
+        var formData = $(this).serialize();
+        formDate = formData.replace(/&?[^=]+=&|&[^=]+=$/g,'');
+        console.log(formData);
+        $.ajax({
+            method: "POST",
+            url: "print.php",
+            data: formData,
+        }).done(function(result){
+                if(result.includes("Error:")){
+                    $("#errorBody").html(result);
+                    $("#errorModal").modal("show");
+                }
+                else{
+                    console.log(result);
+                    $("#successBody").html(result);
+                    $("#successModal").modal("show");
+                }
+            });
+    });
 
+    $("form input, form textarea, form select").change(function(e){
+        $("#save").val("1");
+        console.log("save=1");
+    });
+
+    $("#attention").change(function(e){
+        $("#authBy").val($(this).val());
+    })
 
 
     
