@@ -49,7 +49,7 @@ $conn->close();
     <div class="container">
         <h2 class="top-sm">Fax Transmittal Form</h2>
         <div class="form-wrapper">
-            <form action="print.php" method="post">
+            <form id="faxForm">
                 <div class="form-group row">
                     <div class="col-md-5">
                         <div class="row">
@@ -146,6 +146,44 @@ $conn->close();
             </form>
         </div>
     </div>
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Sent to printer</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="successBody">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <a href="../" class="btn btn-primary">Exit to Transmittal Home</a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Error</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="errorBody">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <a href="../" class="btn btn-primary">Exit to Transmittal Home</a>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script src="../assets/js/jquery-3.3.1.js"></script>
 <script src="../assets/js/jquery.mask.js"></script>
@@ -194,6 +232,29 @@ $conn->close();
         $("#"+$(this).attr("data-list")).empty();
         $("#"+$(this).attr("data-code")).val($(this).val());
         copyToFill($(this), $(this).val());
+    });
+
+    $("#faxForm").submit(function(e){
+        e.preventDefault();
+        // sendTransmittal();
+        var formData = $(this).serialize();
+        formDate = formData.replace(/&?[^=]+=&|&[^=]+=$/g,'');
+        console.log(formData);
+        $.ajax({
+            method: "POST",
+            url: "print.php",
+            data: formData,
+        }).done(function(result){
+                if(result.includes("Error:")){
+                    $("#errorBody").html(result);
+                    $("#errorModal").modal("show");
+                }
+                else{
+                    console.log(result);
+                    $("#successBody").html(result);
+                    $("#successModal").modal("show");
+                }
+            });
     });
 
 </script>

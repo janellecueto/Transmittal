@@ -312,7 +312,7 @@ function faxPDF(){
     global $willFollow, $remarks, $printerPath, $debug;
 
     $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-    initializePDF($pdf);
+    initializePDF($pdf, "Fax Transmittal", $jobNumber);
 
     $pdf->SetFont('helvetica', 'B', 16); // set font
     $pdf->Text(125,14,"Fax Transmittal"); // write text

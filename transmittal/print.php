@@ -15,7 +15,7 @@ include_once("../assets/php/createPDF.php");
 include_once("../label-envelope/printLabel.php");
 include_once("../label-envelope/printEnvelope.php");
 
-$debug = true;  //flag for debugging :)
+$debug = true;  //global flag for debugging :)
 
 //NOTE: since this script only gets called on form submit for basically the entire page of ./index.php, we know that all
 //      of these fields will be in the POST array
@@ -58,6 +58,9 @@ if(!$dupl) $dupl = 1;
 $printLblMain = (array_key_exists("printLblMain", $_POST) ? $_POST['printLblMain'] : 0);
 $printEnvMain = (array_key_exists("printEnvMain", $_POST) ? $_POST['printEnvMain'] : 0);
 
+if($debug){
+    echo "$jobNumber<br>";
+}
 
 /***********************************************************************************************************************
  * Write to DB
@@ -138,7 +141,7 @@ $conn->close();
 // $mainPdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 // transmittalPDF($mainPdf);
 transmittalPDF();
-// makeLblEnv($printLblMain, $printEnvMain);
+
 $q = [];
 $q[] = $jobNumber;
 $q[] = $attention;
@@ -152,19 +155,18 @@ $q[] = $zip;
 // $_GET['q'] = json_encode($q);           //print envelope and print label use the same array structure and q as parameter
 if($printLblMain){
     sendLabel($q);
-    echo "Address info sent to label printer<br>";
+    echo "$company address info sent to label printer<br>";
 }
 if($printEnvMain){
     printEnvelope($q);
-    echo "Address info sent to envelope printer<br>";
+    echo "$company address info sent to envelope printer<br>";
 }
 
+$jn = $jobNumber;   //hold value for $jobNumber in $jn because fillAddress resets jobNumber :/
 //now check for extras
 for($i = 0; $i<2; $i++){
     if($extraComp[$i]){
-        if($debug){
-            echo "extraCode".$i."<br>";
-        }
+
         $_GET['value'] = $extraComp[$i];
         $_GET['flag'] = "company";
         $_GET['ret'] = 1;
@@ -176,7 +178,7 @@ for($i = 0; $i<2; $i++){
         }
 
         $q = []; //reset $q
-        $q[] = $jobNumber;
+        $q[] = $jn;
         $q[] = $attention = $extraName[$i];
         $q[] = $company = $extraComp[$i];
 
@@ -186,23 +188,24 @@ for($i = 0; $i<2; $i++){
         $q[] = $city = $extraInfo['city'];
         $q[] = $state =  $extraInfo['state'];
         $q[] = $zip = $extraInfo['zip'];
-
-        if($debug){
-            echo "$addr1";
-        }
         
+        if($debug){
+            echo "jobNumber: $jn<br>";
+        }
         
         // $copyPdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
         transmittalPDF();
 
         
-        if(!$debug){
+        // if(!$debug){
             if($copyLbl && in_array('lbl'.($i+1), $copyLbl)){
                 sendLabel($q);
+                echo "$company address info sent to label printer<br>";
             }
             if($copyEnv && in_array("env".($i+1), $copyEnv)){
                 printEnvelope($q);
+                echo "$company address info sent to envelope printer<br>";
             }
-        }
+        // }
     }
 }

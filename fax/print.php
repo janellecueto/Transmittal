@@ -2,9 +2,7 @@
 
 require_once("../assets/php/info.php");
 include("../assets/php/current.php");
-include_once("../assets/createPDF.php");
-include_once("../label-envelope/printLabel.php");
-include_once("../label-envelope/printEnvelope.php");
+include_once("../assets/php/createPDF.php");
 
 $debug = true;
 
@@ -94,12 +92,10 @@ if(intval($save)){
     }
 }
 
-//$serialResult->free();
-// $serial = findCurrentNo($conn, $sfQuery);
 mysqli_close($conn);
 
-$mainPdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-faxPDF($mainPdf);
+// $mainPdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+faxPDF();
 
 //print copy tos 
 
@@ -108,8 +104,6 @@ for($i = 0; $i < 2; $i++){
         $company = $extraComp[$i];
         $attention = $extraname[$i];
         $fax = $extraFax[$i];
-
-        $copyPdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-        faxPDF($copyPdf);
+        faxPDF();
     }
 }

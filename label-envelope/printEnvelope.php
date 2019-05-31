@@ -2,9 +2,20 @@
 /**
  * Prints to reception printer using PCL for envelope formatting 
  */
+// $debug = true; //force $debug ? 
 function printEnvelope($qarr){
+    global $debug;
+
     $printerFile = "\\\\Server2008\ReceptionPrinter";
     $handle2 = fopen($printerFile, 'w') or die('Cannot open file: '.$printerFile);
+    
+    if($debug){
+        echo "inside printEnvelope, after open printerFile<br>";
+        echo "qarr:".implode(", ", $qarr)."<br>";
+        fclose($handle2);   //don't print if we're in debug mode
+        return;
+    }
+
     $esc = chr(27); //escape key ascii
     /*
     * Below code only inserts new lines after each addr element

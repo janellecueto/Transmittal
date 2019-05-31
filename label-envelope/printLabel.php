@@ -3,10 +3,20 @@
  *  Prints to label printer
  * */
 
+//  $debug = true;
 function sendLabel($qarr){
+    global $debug;
+
     $len = sizeof($qarr);
     $printerFile = "Q:\\QPRIV\\Label\\d.lbl";
     $handle2 = fopen($printerFile, 'w') or die('Cannot open file: '.$printerFile);
+
+    if($debug){
+        echo "inside printLabel, after open printerFile<br>";
+        echo "qarr:".implode(", ", $qarr)."<br>";
+        fclose($handle2);   //don't print if we're in debug mode
+        return; 
+    }
     /*
     *  must match format:
     *      label type
