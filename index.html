@@ -432,6 +432,12 @@
         })
     });
 
+    $("#attention").change(function(){
+        if($(this).val().length < 5){
+            signName($(this).val(), $("#clientCode").val());
+        } 
+    })
+
     
     </script>
 </body>

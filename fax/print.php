@@ -4,7 +4,7 @@ require_once("../assets/php/info.php");
 include("../assets/php/current.php");
 include_once("../assets/php/createPDF.php");
 
-$debug = true;
+$debug = false;
 
 $jobNumber = $_POST['jobNumber'];
 $clientCode = $_POST['clientCode'];

@@ -15,7 +15,7 @@ include_once("../assets/php/createPDF.php");
 include_once("../label-envelope/printLabel.php");
 include_once("../label-envelope/printEnvelope.php");
 
-$debug = true;  //global flag for debugging :)
+$debug = false;  //global flag for debugging :)
 
 //NOTE: since this script only gets called on form submit for basically the entire page of ./index.php, we know that all
 //      of these fields will be in the POST array

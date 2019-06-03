@@ -435,3 +435,18 @@ function convertDate(dateStr){
     else ret += "-"+arr[1];
     return ret;
 }
+
+function signName(initials, code){
+    $.ajax({
+        method: "GET",
+        url: "../php/signName.php",
+        data:{
+            initials: initials,
+            code: code
+        }
+    }).then(function(response){
+        if(response != "0"){
+            $(this).val(response);
+        }
+    })
+}

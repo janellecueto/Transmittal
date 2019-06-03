@@ -402,6 +402,16 @@ $conn->close();
         $("#save").val("1");
         console.log("save=1");
     })
+    $("#attention").change(function(){
+        if($(this).val().length < 5){
+            signName($(this).val(), $("#clientCode").val());
+        } 
+    })
+    $("#signed").change(function(){
+        if($(this).val().length < 5){
+            signName($(this).val(), "DEI");
+        } 
+    })
 
 
 </script>
