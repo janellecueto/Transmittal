@@ -77,7 +77,7 @@ $save = intval($_POST['save']);
         if ($conn->query($mainQuery)) {
             echo "New pbill record has been saved<br>";
         } else {
-            echo "ERROR: " . $mainQuery . "<br>" . $conn->error;
+            echo "ERROR: " . $mainQuery . "<br>" . $conn->error."<br><b>Form data NOT saved to db.</b>";
         }
     } else {
         echo $mainQuery."<br>";

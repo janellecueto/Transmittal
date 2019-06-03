@@ -262,6 +262,17 @@ $(".auto-date").val(fillDate());
             });
     });
 
+    $("#attention").change(function(){
+        if($(this).val().length < 5 && $("#clientCode").val()){
+            signName($(this), $(this).val(), $("#clientCode").val());
+        } 
+    });
+    $("#from").change(function(){
+        if($(this).val().length < 5){
+            signName($(this), $(this).val(), "DEI");
+        } 
+    });
+
 </script>
 </body>
 </html>

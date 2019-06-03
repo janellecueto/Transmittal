@@ -308,7 +308,7 @@ function transmittalPDF(){
 }
 
 function faxPDF(){
-    global $jobNumber, $date, $clientCode, $attention, $company, $fax, $from, $project, $numPages;
+    global $jobNumber, $date, $clientCode, $attention, $company, $fax, $from, $project, $numPages, $extraComp, $extraFax, $extraName;
     global $willFollow, $remarks, $printerPath, $debug;
 
     $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);

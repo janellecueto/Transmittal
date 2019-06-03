@@ -352,8 +352,6 @@ function faxFill(value, flag, url="../assets/php/fillAddress.php"){
 }
 
 
-
-
 /***********************************************************************************************************************
  * Functions below this line are specific to certain pages, as specified in function descriptions
  */
@@ -436,17 +434,17 @@ function convertDate(dateStr){
     return ret;
 }
 
-function signName(initials, code){
+function signName(element, init, code, url="../assets/php/signName.php"){
     $.ajax({
         method: "GET",
-        url: "../php/signName.php",
+        url: url,
         data:{
-            initials: initials,
-            code: code
+            initials: init,
+            clientCode: code
         }
     }).then(function(response){
         if(response != "0"){
-            $(this).val(response);
+            element.val(response);
         }
-    })
+    });
 }

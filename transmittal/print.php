@@ -128,7 +128,7 @@ if($save){
 
     if(!$debug) {
         if (!$conn->query($mainQuery)) {
-            echo "Error: " . $conn->error . "<br>$mainQuery<br>Form data not saved to db.";
+            echo "Error: " . $conn->error . "<br>$mainQuery<br><b>Form data NOT saved to db.</b>";
             exit;
         }
     }

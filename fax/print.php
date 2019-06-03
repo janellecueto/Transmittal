@@ -26,7 +26,7 @@ $extraComp = $_POST['extraComp'];
 $extraName = $_POST['extraName'];
 $extraFax = $_POST['extraFax'];
 
-$save = $_POST['save'];
+// $save = $_POST['save'];
 
 $conn = new mysqli($host, $user, $password, $defaultTbl);
 if($conn->errno){
@@ -34,48 +34,46 @@ if($conn->errno){
     exit();
 }
 
-if(intval($save)){
-    $mainQuery = "INSERT INTO $defaultTbl.$faxTbl (`Date`, Code, Company, Jn, Project, Attention, FaxNumber, NumberPages, ";
-    $values = " VALUES('".$date->format("Y-m-d")."', '$clientCode', '$company', '$jobNumber', '$project', '$attention', '$fax', $numPages, ";
-    if($remarks){
-        $mainQuery .= "Remarks, ";
-        $values .= "'$remarks',";
+$mainQuery = "INSERT INTO $defaultTbl.$faxTbl (`Date`, Code, Company, Jn, Project, Attention, FaxNumber, NumberPages, ";
+$values = " VALUES('".$date->format("Y-m-d")."', '$clientCode', '$company', '$jobNumber', '$project', '$attention', '$fax', $numPages, ";
+if($remarks){
+    $mainQuery .= "Remarks, ";
+    $values .= "'$remarks',";
+}
+$mainQuery .= "Signed";
+$values .= "'$from'";
+$mainQuery .= ", WillFollow";
+if($willFollow){
+    $values .= ','.true;
+}
+else{
+    $values .= ', 0';
+}
+for($i=1; $i<= 2; $i++){
+    if($extraComp[$i-1]){
+        $mainQuery .= ", Copy_".$i."_Who";
+        $values .= ', "'.$extraName[$i-1].'"';
+        $mainQuery .= ", Copy_".$i."_Co";
+        $values .= ', "'.$extraComp[$i-1].'"';
+        $mainQuery .= ", Copy_".$i."_Fax";
+        $values .= ', "'.$extraFax[$i-1].'"';
     }
-    $mainQuery .= "Signed";
-    $values .= "'$from'";
-    $mainQuery .= ", WillFollow";
-    if($willFollow){
-        $values .= ','.true;
-    }
-    else{
-        $values .= ', 0';
-    }
-    for($i=1; $i<= 2; $i++){
-        if($extraComp[$i-1]){
-            $mainQuery .= ", Copy_".$i."_Who";
-            $values .= ', "'.$extraName[$i-1].'"';
-            $mainQuery .= ", Copy_".$i."_Co";
-            $values .= ', "'.$extraComp[$i-1].'"';
-            $mainQuery .= ", Copy_".$i."_Fax";
-            $values .= ', "'.$extraFax[$i-1].'"';
-        }
-    }
-    $mainQuery .= ')';
-    $values .= ')';
-    $mainQuery .= $values;
+}
+$mainQuery .= ')';
+$values .= ')';
+$mainQuery .= $values;
 
-    //echo $mainQuery;
-    if(!$debug){
-        if($conn->query($mainQuery) === true){
-            echo "New record created successfully in fax_test";
-        }
-        else{
-            echo "ERROR: ".$conn->error;
-        }
+//echo $mainQuery;
+if(!$debug){
+    if($conn->query($mainQuery)){
+        echo "Fax Transmittal saved<br>";
     }
     else{
-        echo $mainQuery."<br>";
+        echo "ERROR: ".$conn->error."<br>".$mainQuery."<br><b>Form data NOT saved in db.</b>";
     }
+}
+else{
+    echo $mainQuery."<br>";
 }
 
 mysqli_close($conn);

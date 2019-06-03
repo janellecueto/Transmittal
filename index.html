@@ -433,8 +433,8 @@
     });
 
     $("#attention").change(function(){
-        if($(this).val().length < 5){
-            signName($(this).val(), $("#clientCode").val());
+        if($(this).val().length < 5 && $("#clientCode").val()){
+            signName($(this), $(this).val(), $("#clientCode").val(), "assets/php/signName.php");
         } 
     })
 

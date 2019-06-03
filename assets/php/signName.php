@@ -14,10 +14,10 @@ include("info.php");
      exit();
  }
 
-$query = "SELECT name FROM $defaultTbl.clnames WHERE initials = '$initals' AND code = '$code'";
+$query = "SELECT `name` FROM $defaultTbl.clnames WHERE initials = '$initials' AND code = '$code'";
 $result = $conn->query($query);
-if($row = $result->fetch_assoc()){
-    echo $row['name'];
+if($row = $result->fetch_row()){
+    echo $row[0];
 }
 else{
     echo "0";

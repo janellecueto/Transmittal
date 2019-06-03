@@ -403,13 +403,14 @@ $conn->close();
         console.log("save=1");
     })
     $("#attention").change(function(){
-        if($(this).val().length < 5){
-            signName($(this).val(), $("#clientCode").val());
+        if($(this).val().length < 5 && $("#clientCode").val()){
+            signName($(this), $(this).val(), $("#clientCode").val());
         } 
     })
     $("#signed").change(function(){
         if($(this).val().length < 5){
-            signName($(this).val(), "DEI");
+            // console.log($(this).val());
+            signName($(this), $(this).val(), "DEI");
         } 
     })
 

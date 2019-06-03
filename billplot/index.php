@@ -135,15 +135,15 @@ $sheets = include("plottingPrices.php");
                             <td><input type="text" name="numSheets[]" class="form-control form-control-sm num" id="sheets1"></td>
                             <td>
                                 <select name="sheetSizes[]" class="form-control form-control-sm select-size">
-                                    <option value="ss1">24 x 36</option>
-                                    <option value="ss2">30 x 42</option>
-                                    <option value="ss3">36 x 48</option>
-                                    <option value="ss4">8.5 x 11</option>
-                                    <option value="ss5">11 x 17</option>
-                                    <option value="ss6">12 x 18</option>
-                                    <option value="ss7">15 x 21</option>
-                                    <option value="ss8">18 x 24</option>
-                                    <option value="ss9">22 x 34</option>
+                                    <option value="24 x 36">24 x 36</option>
+                                    <option value="30 x 42">30 x 42</option>
+                                    <option value="36 x 48">36 x 48</option>
+                                    <option value="8.5 x 11">8.5 x 11</option>
+                                    <option value="11 x 17">11 x 17</option>
+                                    <option value="12 x 18">12 x 18</option>
+                                    <option value="15 x 21">15 x 21</option>
+                                    <option value="18 x 24">18 x 24</option>
+                                    <option value="22 x 34">22 x 34</option>
                                 </select>
                             </td>
                             <td>
@@ -152,7 +152,7 @@ $sheets = include("plottingPrices.php");
                                 </select>
                             </td>
                             <td class="text-center">
-                                <input type="checkbox" class="form-check-input" name="colored[]" value="0">
+                                <input type="checkbox" class="form-check-input" id="color1" name="colored[]" value="0">
                             </td>
                             <td><input type="text" name="costs[]" class="form-control form-control-sm money cost-money" placeholder="$0.00" readonly></td>
                             <td><input type="text" name="lineTotals[]" class="form-control form-control-sm money total-money" placeholder="$0.00" readonly></td>
@@ -248,15 +248,15 @@ $sheets = include("plottingPrices.php");
 <script>
     $(".auto-date").val(fillDate());
     let sheetSizes = {
-        ss1: ["24 x 36"],
-        ss2: ["30 x 42"],
-        ss3: ["36 x 48"],
-        ss4: ["8.5 x 11"],
-        ss5: ["11 x 17"],
-        ss6: ["12 x 18"],
-        ss7: ["15 x 21"],
-        ss8: ["18 x 24"],
-        ss9: ["22 x 34"]
+        "24 x 36": ["24 x 36"],
+        "30 x 42": ["30 x 42"],
+        "36 x 48": ["36 x 48"],
+        "8.5 x 11": ["8.5 x 11"],
+        "11 x 17": ["11 x 17"],
+        "12 x 18": ["12 x 18"],
+        "15 x 21": ["15 x 21"],
+        "18 x 24": ["18 x 24"],
+        "22 x 34": ["22 x 34"]
     };
 
     let row = [];
@@ -283,20 +283,6 @@ $sheets = include("plottingPrices.php");
     console.log(sheetSizes);
 
 
-    // $(document).ready(setPrices);
-
-    let revSizes = {        //i realized in the db that we store the sheet sizes instead of ss<i> :/
-        "24 x 36": "ss1",
-        "30 x 42": "ss2",
-        "36 x 48": "ss3",
-        "8.5 x 11": "ss4",
-        "11 x 17": "ss5",
-        "12 x 18": "ss6",
-        "15 x 21" : "ss7",
-        "18 x 24" : "ss8",
-        "22 x 34" : "ss9"
-    }
-
     //set variables for id and row, if there's an id, there's a row and we have to pre-fill the form with info in row
 
 
@@ -322,7 +308,7 @@ $(document).ready(function(){
             $("input[name='numSheets[]']:nth-child("+(i)+")").bind("rowLoaded",updateLineTotal);  //need to bind updateLineTotal to an element
             document.getElementsByName("numSets[]")[i-1].value = parseInt(row["Sets"+i]);           //for $(this)
             document.getElementsByName("numSheets[]")[i-1].value = parseInt(row["Copies"+i]);
-            document.getElementsByName("sheetSizes[]")[i-1].value = revSizes[row["Size"+i]];
+            document.getElementsByName("sheetSizes[]")[i-1].value = row["Size"+i];
             if(row["Color"+i] === "Y") document.getElementsByName("colored[]")[i-1].checked = true;
             document.getElementsByName("costs[]")[i-1].value = row["Cost"+i];
             
@@ -384,7 +370,15 @@ $(document).ready(function(){
     });
 
     $("#attention").change(function(e){
-        $("#authBy").val($(this).val());
+        
+    })
+    $("#attention").change(function(){
+        if($(this).val().length < 5 && $("#clientCode").val()){
+            signName($(this), $(this).val(), $("#clientCode").val());
+            signName($("#authBy"), $(this).val(), $("#clientCode").val());
+        } else {
+            $("#authBy").val($(this).val());
+        }
     })
 
 
