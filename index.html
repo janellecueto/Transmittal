@@ -335,12 +335,13 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <input type="text" class="form-control form-control-sm" name="attention" id="attention" placeholder="Attention">
+                            <input type="text" class="form-control form-control-sm" name="attention" id="attention" placeholder="Attention" list="clientNames">
+                            <datalist id="clientNames"></datalist>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                            <input type="submit" class="btn btn-primary" name="submit" value="Print Envelope">
-                            <input type="submit" class="btn btn-primary" name="submit" value="Print Label">
+                            <input type="submit" class="btn btn-primary" name="submit" id="envelopeSubmit" value="Print Envelope">
+                            <input type="submit" class="btn btn-primary" name="submit" id="labelSubmit" value="Print Label">
                         </div>
                     </form>
                 </div>
@@ -348,15 +349,90 @@
         </div>
     </div>
 
-<!--    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"-->
-<!--    crossorigin="anonymous"></script>-->
-<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"-->
-<!--    crossorigin="anonymous"></script>-->
-<!--    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"-->
-<!--    crossorigin="anonymous"></script>-->
     <script src="assets/js/jquery-3.3.1.js"></script>
     <script src="assets/js/jquery.mask.js"></script>
     <script src="assets/js/bootstrap.bundle.js"></script>
     <script src="assets/js/bootstrap.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script>
+    $("#jobNumber").change(function(e){         //fill address inputs when job number changes
+        e.preventDefault();
+        $("#clientCode").val("");
+        $("#clientNames").empty();              //empty out the datalist of client names before inserting new names
+        addrFill($(this).val(), "jobNumber", url="assets/php/fillAddress.php");
+        skipAddr($("#company").val());
+    });
+    $("#clientCode").on("input", function(e){        //fill/change address inputs when client code changes
+        e.preventDefault();
+        $("#clientNames").empty();
+        addrFill($(this).val(), "clientCode", url="assets/php/fillAddress.php");
+        skipAddr($("#company").val());
+    });
+
+
+    function skipAddr(company){
+        //if there's a company filled out after we call addrFill(), set those tab indices to -1 
+        if(company){
+            $("#company").attr("tabIndex", "-1");
+            $("#addr1").attr("tabIndex", "-1");
+            $("#addr2").attr("tabIndex", "-1");
+            $("#city").attr("tabIndex", "-1");
+            $("#state").attr("tabIndex", "-1");
+            $("#zip").attr("tabIndex", "-1");
+        }
+    }
+
+    $("#envelopeSubmit").click(function(e){
+        e.preventDefault();
+        var q = [];
+        q.push($("#attention").val());
+        q.push($("#company").val());
+        q.push($("#addr1").val());
+        if($("#addr2").val()) q.push($("#addr2").val());
+        q.push($("#city").val());
+        q.push($("#state").val());
+        q.push($("#zip").val());
+
+        qStr = JSON.stringify(q);
+        console.log(qStr);
+
+        $.ajax({
+            method: "GET",
+            url: "label-envelope/printEnvelope.php",
+            data: {
+                q: qStr
+            }
+        }).then(function(response){
+            alert("Address for "+q[1]+" sent to Reception envelope printer");
+        })
+    });
+    $("#labelSubmit").click(function(e){
+        e.preventDefault();
+        var q = [];
+        q.push($("#jobNumber").val());
+        q.push($("#attention").val());
+        q.push($("#company").val());
+        q.push($("#addr1").val());
+        if($("#addr2").val()) q.push($("#addr2").val());
+        q.push($("#city").val());
+        q.push($("#state").val());
+        q.push($("#zip").val());
+
+        qStr = JSON.stringify(q);
+        console.log(qStr);
+
+        $.ajax({
+            method: "GET",
+            url: "label-envelope/printLabel.php",
+            data: {
+                q: qStr
+            }
+        }).then(function(response){
+            alert("Address for "+q[2]+" sent to label printer");
+        })
+    });
+
+    
+    </script>
 </body>
 </html>
