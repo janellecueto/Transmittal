@@ -11,7 +11,9 @@
     <link rel="stylesheet" href="assets/css/mainStyle.css">
     <title>DEI Transmittal System</title>
     <style>
-
+/* .dropdown-toggle:hover > .dropdown-menu {
+  display: block;
+} */
     </style>
 </head>
 <body>
@@ -54,6 +56,7 @@
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="assets/php/mainSearch.php?type=3">Last</a>
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#pbSearch">Search</a>
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#plotPrices">Plotting Prices</a>
                         </div>
                     </div>
                 </div>
@@ -349,6 +352,26 @@
         </div>
     </div>
 
+    <!-- Plot prices modal-->
+    <div class="modal fade" role="dialog" id="plotPrices">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Current Plotting Prices</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <iframe class="plotting-iframe" src="billplot/plottingPrices.php"></iframe>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="assets/js/jquery-3.3.1.js"></script>
     <script src="assets/js/jquery.mask.js"></script>
     <script src="assets/js/bootstrap.bundle.js"></script>
@@ -370,6 +393,7 @@
     });
 
 
+
     function skipAddr(company){
         //if there's a company filled out after we call addrFill(), set those tab indices to -1 
         if(company){
@@ -381,6 +405,22 @@
             $("#zip").attr("tabIndex", "-1");
         }
     }
+
+    // function toggleDropdown (e) {
+
+    //     var toggle = $(this).find(".dropdown-toggle");
+    //     var menu = $(this).find(".dropdown-menu");
+    //     toggle.addClass("show");
+    //     menu.addClass("show");
+    //     setTimeout(function(){
+    //         toggle[toggle.is(':hover') ? 'addClass' : 'removeClass']('show');
+    //         menu[toggle.is(':hover') ? 'addClass' : 'removeClass']('show');
+    //     }, 300)
+    // }
+
+    // $('body')
+    // .on('mouseenter mouseleave','.btn-group',toggleDropdown)
+    // .on('click', '.dropdown-menu a', toggleDropdown);
 
     $("#envelopeSubmit").click(function(e){
         e.preventDefault();
