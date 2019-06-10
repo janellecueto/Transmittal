@@ -77,7 +77,7 @@ if($save){
     $values = "VALUES( '".$date->format("Y-m-d")."', '$clientCode', '".str_replace("'", '"', $company)."', '$addr1', '$addr2', '".str_replace("'", '"', $project)."', '$city', '$state', '$zip', '$jobNumber', ";
 
     $mainQuery .= "`Client num`, Attention, `$rBtn`, Via, ";
-    $values .= "'$clientNumber', '$attention', 1, '$via', ";
+    $values .= "'$clientNumber', '".str_replace("'", '"', $attention)."', 1, '$via', ";
 
     foreach($items as $v){
         if(strpos($v, "Other") !== false){
