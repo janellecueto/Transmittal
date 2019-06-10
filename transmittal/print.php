@@ -74,7 +74,7 @@ if($conn->connect_errno){
 
 if($save){
     $mainQuery = "INSERT INTO tc.$transTbl (`Date`, `Code`, Company, Addr1, Addr2, Project, City, State, Zip, Jn, ";
-    $values = "VALUES( '".$date->format("Y-m-d")."', '$clientCode', '$company', '$addr1', '$addr2', '$project', '$city', '$state', '$zip', '$jobNumber', ";
+    $values = "VALUES( '".$date->format("Y-m-d")."', '$clientCode', '".str_replace("'", '"', $company)."', '$addr1', '$addr2', '".str_replace("'", '"', $project)."', '$city', '$state', '$zip', '$jobNumber', ";
 
     $mainQuery .= "`Client num`, Attention, `$rBtn`, Via, ";
     $values .= "'$clientNumber', '$attention', 1, '$via', ";

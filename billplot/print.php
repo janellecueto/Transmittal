@@ -45,7 +45,7 @@ $save = intval($_POST['save']);
     }
 
     $mainQuery = "INSERT INTO $defaultTbl.$pbillTbl (Jn, `Code`, `Date`, Attn, Company, Addr1, ";
-    $values = " VALUES('$jobNumber', '$clientCode', '".$date->format("Y-m-d")."', '$attention', '$company', '$addr1', ";
+    $values = " VALUES('$jobNumber', '$clientCode', '".$date->format("Y-m-d")."', '$attention', '".str_replace("'", '"', $company)."', '$addr1', ";
     if ($addr2) {
         $mainQuery .= "Addr2, ";
         $values .= "'$addr2', ";

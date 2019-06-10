@@ -35,10 +35,10 @@ if($conn->errno){
 }
 
 $mainQuery = "INSERT INTO $defaultTbl.$faxTbl (`Date`, Code, Company, Jn, Project, Attention, FaxNumber, NumberPages, ";
-$values = " VALUES('".$date->format("Y-m-d")."', '$clientCode', '$company', '$jobNumber', '$project', '$attention', '$fax', $numPages, ";
+$values = " VALUES('".$date->format("Y-m-d")."', '$clientCode', '".str_replace("'", '"', $company)."', '$jobNumber', '".str_replace("'", '"', $project)."', '$attention', '$fax', $numPages, ";
 if($remarks){
     $mainQuery .= "Remarks, ";
-    $values .= "'$remarks',";
+    $values .= "'".str_replace("'", '"', $remarks)."',";
 }
 $mainQuery .= "Signed";
 $values .= "'$from'";
