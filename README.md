@@ -2,12 +2,12 @@
 DEI Transmittal System for creating, searching, and printing transmittal documents. Includes functionality for printing DEI envelopes and mailing labels.
 
 ## Screenshots
-![](images/transmittal-01.jpg)
-![](images/transmittal-02.jpg)
-![](images/transmittal-03.jpg)
-![](images/transmittal-04.jpg)
-![](images/transmittal-05.jpg)
-![](images/transmittal-06.jpg)
+![](images/transmittal-01.JPG)
+![](images/transmittal-02.JPG)
+![](images/transmittal-03.JPG)
+![](images/transmittal-04.JPG)
+![](images/transmittal-05.JPG)
+![](images/transmittal-06.JPG)
 
 ## Functionality
 - Autocompletion on address fields based on job number or client code entry
