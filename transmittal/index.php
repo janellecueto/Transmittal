@@ -150,9 +150,9 @@ $conn->close();
             </div>
             <div class="form-group mid" id="addWrapper" style="margin-bottom: 1rem;">
                 <div class="row">
-                    <div class="col-sm-2"><input type="text" class="form-control form-control-sm num" name="copies[]" placeholder="Copies"></div>
+                    <div class="col-sm-2"><input type="text" class="form-control form-control-sm num" name="copies[]" placeholder="Copies" required></div>
                     <div class="col-sm-2"><input type="date" class="form-control form-control-sm auto-date" name="dates[]"></div>
-                    <div class="col-sm-2"><input type="text" class="form-control form-control-sm num" name="numbers[]" placeholder="Number"></div>
+                    <div class="col-sm-2"><input type="text" class="form-control form-control-sm num" name="numbers[]" placeholder="Number" required></div>
                     <div class="col-sm-6"><input type="text" class="form-control form-control-sm" name="descriptions[]" placeholder="Description"></div>
                 </div>
             </div>
