@@ -131,8 +131,8 @@ $sheets = include("plottingPrices.php");
                         </thead>
                         <tbody id="rowWrapper">
                         <tr>
-                            <td><input type="text" name="numSets[]" class="form-control form-control-sm num" id="sets1"></td>
-                            <td><input type="text" name="numSheets[]" class="form-control form-control-sm num" id="sheets1"></td>
+                            <td><input type="text" name="numSets[]" class="form-control form-control-sm num" id="sets1" required></td>
+                            <td><input type="text" name="numSheets[]" class="form-control form-control-sm num" id="sheets1" required></td>
                             <td>
                                 <select name="sheetSizes[]" class="form-control form-control-sm select-size">
                                     <option value="24 x 36">24 x 36</option>
