@@ -179,6 +179,7 @@ $sheets = include("plottingPrices.php");
                     </div>
                 </div>
                 <input type="hidden" name="save" id="save" value="1">
+                <input type="hidden" name="invoice" id="invoice" value="0">
             </form>
         </div>
     </div>
@@ -288,6 +289,8 @@ $sheets = include("plottingPrices.php");
 
 $(document).ready(function(){
     if(id){
+        $("#invoice").val(id);
+
         $("#jobNumber").val(row['Jn']);
         $("#clientCode").val(row['Code']);
         $("#clientNumber").val(row['Client_num']);

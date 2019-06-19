@@ -406,7 +406,6 @@ function billPlotPDF(){
     $pdf->Text(16,151, "Description:");
     //end remarks box
 
-
     $pdf->SetFont('helvetica', 'B', 16); // set font
     $pdf->Text(125,14,"Plotting Record #"); // TODO: add bill record #
     $pdf->Text(175, 14, $invoice);

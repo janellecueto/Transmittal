@@ -32,17 +32,19 @@ $lineTotals = $_POST['lineTotals'];
 
 $total = $_POST['total'];
 $save = intval($_POST['save']);
+$invoice = $_POST['invoice'];
 
 /***********************************************************************************************************************
  * Write to DB
  */
+$conn = new mysqli($host, $user, $password, $defaultTbl);
+if($conn->errno){
+    echo "<br>Error: ".$conn->error;
+    exit();
+}
 
  if($save){
-    $conn = new mysqli($host, $user, $password, $defaultTbl);
-    if($conn->errno){
-        echo "<br>Error: ".$conn->error;
-        exit();
-    }
+
 
     $mainQuery = "INSERT INTO $defaultTbl.$pbillTbl (Jn, `Code`, `Date`, Attn, Company, Addr1, ";
     $values = " VALUES('$jobNumber', '$clientCode', '".$date->format("Y-m-d")."', '".str_replace("'", '"', $attention)."', '".str_replace("'", '"', $company)."', '$addr1', ";
@@ -82,8 +84,10 @@ $save = intval($_POST['save']);
     } else {
         echo $mainQuery."<br>";
     }
+    $invoice = $billInvoice;
 
-    $conn->close();
 }
+
+$conn->close();
 
 billPlotPDF();
